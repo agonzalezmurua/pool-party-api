@@ -43,28 +43,30 @@ function setAuthorizationHeaderInterceptor(authorization) {
   });
 }
 
-function refreshToken(preRequestInterceptor) {
+function handleExpiredToken(preRequestInterceptor) {
   //creo el interceptor
   const interceptor = OsuService.client.interceptors.response.use(
     // si ta bn, ps ta muy bn
     (response) => response,
     //sino, wuaj
     (error) => {
+      consola.debug("response headers: ", error.request.headers);
       consola.debug("request errored with status", error.response.status);
       if (error.response.status === 401) {
         //mando a la xuxa el interceptor por q ya hizo la pega
         consola.debug("discarding original request interceptor");
-        OsuService.client.interceptors.response.eject(preRequestInterceptor);
+        OsuService.client.interceptors.request.eject(preRequestInterceptor);
         //pido el token nuevo
         consola.debug("attempting to get new bearer token");
-        getBearerToken().then((authorization) => {
-          // Como remapeo este chistozo??????
-          return OsuService.client.request(error.config);
+        return getBearerToken()
+        .then((authorization) => {
+          preRequestInterceptor = setAuthorizationHeaderInterceptor(authorization)
+          error.config.headers.Authorization = authorization
+          return OsuService.client.request(error.config)
         });
       }
     }
   );
-
   return interceptor;
 }
 
@@ -73,9 +75,8 @@ module.exports = {
     const authorization = await getBearerToken();
 
     const preRequestInterceptor = setAuthorizationHeaderInterceptor(
-      authorization + `D`
+      authorization
     );
-
-    const postRequestInterceptor = refreshToken();
+    handleExpiredToken(preRequestInterceptor);
   },
 };
