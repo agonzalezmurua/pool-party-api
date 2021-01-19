@@ -1,4 +1,5 @@
 require("dotenv").config();
+const consola = require("consola");
 const osuService = require("./services/osu");
 const oauthService = require("./services/oauth");
 const Express = require("express");
@@ -14,7 +15,7 @@ router.get("/api/beatmapsets/:id", async (req, res) => {
     const { data } = await osuService.getBeatmapsets(id);
     res.json(data);
   } catch (error) {
-    console.error(error);
+    consola.error(error);
     res.status(500).send();
   }
 });
@@ -26,11 +27,11 @@ oauthService
   .then(() => {
     const server = app.listen(port);
     server.on("listening", () => {
-      console.log("app is ready and listening to port", port);
+      consola.info("app is ready and listening to port", port);
     });
   })
   .catch((error) => {
-    console.error(
+    consola.error(
       "Failed to configure oath service before initialization",
       error
     );
