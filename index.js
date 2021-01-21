@@ -6,6 +6,7 @@ const Express = require("express");
 const app = Express();
 const port = process.env.APP_PORT || 3000;
 const router = Express.Router();
+const cors = require("cors");
 
 router.get("/api/beatmapsets/:id", async (req, res) => {
   const {
@@ -20,6 +21,11 @@ router.get("/api/beatmapsets/:id", async (req, res) => {
   }
 });
 
+app.use(
+  cors({
+    origin: process.env.APP_ALLOWED_ORIGIN,
+  })
+);
 app.use(router);
 
 oauthService
