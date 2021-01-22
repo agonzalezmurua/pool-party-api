@@ -1,17 +1,17 @@
-const querystring = require("querystring");
-const axios = require("axios").default;
-const OsuService = require("./osu");
-const consola = require("consola");
+import { encode } from "querystring";
+import axios from "axios";
+import { BASE_URL, client } from "./osu.js";
+import consola from "consola";
 
 const oauth = axios.create({
-  baseURL: `${OsuService.BASE_URL}`,
+  baseURL: `${BASE_URL}`,
 });
 
 function getBearerToken() {
   return oauth
     .post(
       "/oauth/token",
-      querystring.encode({
+      encode({
         client_id: process.env.OSU_API_CLIENT_ID,
         client_secret: process.env.OSU_API_SECRET,
         grant_type: "client_credentials",
@@ -19,7 +19,6 @@ function getBearerToken() {
       })
     )
     .then((response) => {
-      consola.debug("bearer token response status", response.status);
       const {
         data: { token_type, access_token },
       } = response;
@@ -27,13 +26,13 @@ function getBearerToken() {
       return bearerToken;
     })
     .catch((error) => {
-      consola.error("failed to fetch new bearer token", error);
+      consola.error("Failed to fetch new bearer token", error);
       Promise.reject(error);
     });
 }
 
 function setAuthorizationHeaderInterceptor(authorization) {
-  return OsuService.client.interceptors.request.use(function (config) {
+  return client.interceptors.request.use(function (config) {
     config.headers = {
       common: {
         Authorization: authorization,
@@ -45,24 +44,25 @@ function setAuthorizationHeaderInterceptor(authorization) {
 
 function handleExpiredToken(preRequestInterceptor) {
   //creo el interceptor
-  const interceptor = OsuService.client.interceptors.response.use(
+  const interceptor = client.interceptors.response.use(
     // si ta bn, ps ta muy bn
     (response) => response,
     //sino, wuaj
     (error) => {
-      consola.debug("response headers: ", error.request.headers);
-      consola.debug("request errored with status", error.response.status);
+      consola.debug("Response headers: ", error.request.headers);
+      consola.debug("Request errored with status", error.response.status);
       if (error.response.status === 401) {
         //mando a la xuxa el interceptor por q ya hizo la pega
-        consola.debug("discarding original request interceptor");
-        OsuService.client.interceptors.request.eject(preRequestInterceptor);
+        consola.debug("Discarding original request interceptor");
+        client.interceptors.request.eject(preRequestInterceptor);
         //pido el token nuevo
-        consola.debug("attempting to get new bearer token");
-        return getBearerToken()
-        .then((authorization) => {
-          preRequestInterceptor = setAuthorizationHeaderInterceptor(authorization)
-          error.config.headers.Authorization = authorization
-          return OsuService.client.request(error.config)
+        consola.debug("Attempting to get new bearer token");
+        return getBearerToken().then((authorization) => {
+          preRequestInterceptor = setAuthorizationHeaderInterceptor(
+            authorization
+          );
+          error.config.headers.Authorization = authorization;
+          return client.request(error.config);
         });
       }
     }
@@ -70,13 +70,14 @@ function handleExpiredToken(preRequestInterceptor) {
   return interceptor;
 }
 
-module.exports = {
-  oauthSetup: async function () {
-    const authorization = await getBearerToken();
+export async function configureOauth() {
+  consola.debug("Starting oauth configuration");
+  const authorization = await getBearerToken();
+  consola.debug("Bearer token fetched");
+  const preRequestInterceptor = setAuthorizationHeaderInterceptor(
+    authorization
+  );
 
-    const preRequestInterceptor = setAuthorizationHeaderInterceptor(
-      authorization
-    );
-    handleExpiredToken(preRequestInterceptor);
-  },
-};
+  consola.success("Oauth succesfully configured");
+  handleExpiredToken(preRequestInterceptor);
+}

@@ -1,0 +1,13 @@
+{
+  "verbose": true,
+  "ignore": ["node_modules/*"],
+  "watch": [
+    "controllers/*",
+    "middlewares/*",
+    "models/*",
+    "services/*",
+    "routes/*",
+    ".env.*"
+  ],
+  "delay": 500
+}
