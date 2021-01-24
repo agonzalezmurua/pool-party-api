@@ -1,5 +1,6 @@
 import consola from "consola";
 import colors from "colors/safe.js";
+
 /**
  *
  * @param {import('express').Request} req
@@ -11,6 +12,6 @@ export default function (req, res, next) {
   const protocol = colors.yellow(req.protocol);
   const path = req.path;
 
-  consola.info(`[${method} ${protocol}] - ${path}`);
+  consola.info(`${method} ${protocol} - ${path}`);
   next();
 }
