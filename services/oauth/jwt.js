@@ -44,6 +44,8 @@ export const issueAuthentication = (payload) => {
 /**
  * Ensures that the given authorization header contains a valid
  * access token
+ *
+ * And populates the request object with `req.user` if there is any valid session
  * @param {import('express').Request} req
  * @param {import('express').Response} res
  * @param {import('express').NextFunction} next

@@ -9,9 +9,19 @@ export default function errorHandler(err, req, res, next) {
     return next(err);
   }
 
+  const error = {
+    message: err.message || "NO.MESSAGE",
+    name: err.name,
+  };
+
   switch (err.name) {
+    case "ValidationError":
+      error.validations = err.errors;
+      res.status(400);
+      break;
     case "UnauthenticatedError":
       res.status(401);
+      break;
     case "UnauthorizedError":
       res.status(403);
       break;
@@ -21,9 +31,6 @@ export default function errorHandler(err, req, res, next) {
   }
 
   res.json({
-    error: {
-      message: err.message || "NO.MESSAGE",
-      name: err.name,
-    },
+    error: error,
   });
 }

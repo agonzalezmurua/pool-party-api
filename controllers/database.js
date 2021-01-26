@@ -1,13 +1,20 @@
 import mongoose from "mongoose";
 
-import BeatmapsetSchema from "../models/database_schemas/beatmapset.js";
-import UserSchema from "../models/database_schemas/user.js";
-import TournamentSchema from "../models/database_schemas/tournament.js";
-import PoolSchema from "../models/database_schemas/pool.js";
+import BeatmapsetSchema, {
+  BeatmapsetModelName,
+} from "../models/database_schemas/beatmapset.js";
+
+import UserSchema, { UserModelName } from "../models/database_schemas/user.js";
+
+import TournamentSchema, {
+  TournamentModelName,
+} from "../models/database_schemas/tournament.js";
+
+import PoolSchema, { PoolModelName } from "../models/database_schemas/pool.js";
 
 export default {
-  Beatmapset: mongoose.model("Beatmapset", BeatmapsetSchema),
-  User: mongoose.model("User", UserSchema),
-  Tournament: mongoose.model("Tournament", TournamentSchema),
-  Pool: mongoose.model("Pool", PoolSchema),
+  Beatmapset: mongoose.model(BeatmapsetModelName, BeatmapsetSchema),
+  User: mongoose.model(UserModelName, UserSchema),
+  Tournament: mongoose.model(TournamentModelName, TournamentSchema),
+  Pool: mongoose.model(PoolModelName, PoolSchema),
 };

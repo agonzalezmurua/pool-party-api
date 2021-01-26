@@ -1,11 +1,24 @@
 import mongoose from "mongoose";
 
-import PoolSchema from "./pool.js";
-import UserSchema from "./user.js";
+import { UserModelName } from "./user.js";
+import { PoolModelName } from "./pool.js";
 
 const TournamentSchema = new mongoose.Schema({
-  created_by: { type: UserSchema, required: true },
-  pools: [PoolSchema],
+  name: {
+    type: String,
+    required: true,
+  },
+  created_by: {
+    type: mongoose.Types.ObjectId,
+    ref: UserModelName,
+    required: true,
+  },
+  pools: {
+    type: [{ type: mongoose.Types.ObjectId, ref: PoolModelName }],
+    validate: [(value) => value.length >= 1, "{PATH} needs at least 1 entry"],
+  },
 });
+
+export const TournamentModelName = "Tournament";
 
 export default TournamentSchema;
