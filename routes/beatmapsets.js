@@ -15,7 +15,7 @@ router.get("/", (req, res) => {
 router.get("/:id", async (req, res, next) => {
   try {
     const osu_id = req.params.id;
-    const document = await Db.beatmapset.findOne({
+    const document = await Db.Beatmapset.findOne({
       osu_id: osu_id,
     });
 
@@ -36,12 +36,12 @@ router.get("/:id", async (req, res, next) => {
   }
 });
 
-router.post("/", validateSchema(Db.beatmapset), async (req, res, next) => {
+router.post("/", validateSchema(Db.Beatmapset), async (req, res, next) => {
   try {
     const { document } = req;
     const { osu_id } = document;
 
-    if (await Db.beatmapset.findOne({ osu_id })) {
+    if (await Db.Beatmapset.findOne({ osu_id })) {
       res.status(409);
       throw new Error("APP.MAP.ALREADY.EXIST");
     }
@@ -63,7 +63,7 @@ router.post("/", validateSchema(Db.beatmapset), async (req, res, next) => {
 
 router.delete("/:id", async (req, res, next) => {
   try {
-    await Db.beatmapset.findByIdAndRemove(req.params.id);
+    await Db.Beatmapset.findByIdAndRemove(req.params.id);
   } catch (error) {
     next(error);
   }

@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 
-import Pool from "./pool";
+import Pool from "./pool.js";
+import User from "./user.js";
 
-export const Tournament = new mongoose.Schema({
-  created_by: { type: User, required: true },
+const Tournament = new mongoose.Schema({
   pools: [Pool],
 });
 

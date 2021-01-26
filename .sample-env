@@ -5,6 +5,8 @@ APP_ALLOWED_ORIGIN=
 # Osu Api integration
 OSU_API_CLIENT_ID=
 OSU_API_SECRET=
+## Oauth parameters
+OSU_OAUTH_REDIRECT_URI=
 
 # MongoDB config
 MONGO_CONNECTION_DOMAIN=

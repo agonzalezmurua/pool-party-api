@@ -14,12 +14,14 @@
     "express": "^4.17.1",
     "mongoose": "^5.11.13",
     "nodemon": "^2.0.7",
+    "passport": "^0.4.1",
+    "passport-http-oauth": "^0.1.3",
     "querystring": "^0.2.0"
   },
   "type": "module",
   "devDependencies": {},
   "scripts": {
-    "start": "cross-env CONSOLA_LEVEL=4 NODE_ENV=local nodemon app.js",
+    "start": "cross-env CONSOLA_LEVEL=4 NODE_ENV=local nodemon -r dotenv/config app.js",
     "prod": "node index.js"
   },
   "author": "",

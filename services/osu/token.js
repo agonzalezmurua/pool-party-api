@@ -1,18 +1,18 @@
 import axios from "axios";
 import { encode } from "querystring";
-import { client, BASE_URL, prefix } from "./osu.js";
+import { client, BASE_URL, prefix, CLIENT_ID, CLIENT_SECRET } from "../osu.js";
 
 const oauth = axios.create({
   baseURL: `${BASE_URL}`,
 });
 
-function fetchToken() {
+async function fetchToken() {
   return oauth
     .post(
       "/oauth/token",
       encode({
-        client_id: process.env.OSU_API_CLIENT_ID,
-        client_secret: process.env.OSU_API_SECRET,
+        client_id: CLIENT_ID,
+        client_secret: CLIENT_SECRET,
         grant_type: "client_credentials",
         scope: "public",
       })
@@ -26,7 +26,7 @@ function fetchToken() {
     })
     .catch((error) => {
       consola.error(prefix, "Failed to fetch new bearer token", error);
-      Promise.reject(error);
+      throw error;
     });
 }
 function setAuthorizationHeaderInterceptor(authorization) {
@@ -73,7 +73,7 @@ function setExpiredTokenInterceptor(previousRequestInterceptor) {
   return interceptor;
 }
 
-export async function configureOsuServiceAuth() {
+export async function configure() {
   consola.debug(prefix, "Starting oauth configuration");
   const authorization = await fetchToken();
   consola.debug(prefix, "Bearer token fetched");

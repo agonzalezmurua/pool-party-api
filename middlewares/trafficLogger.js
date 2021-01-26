@@ -10,8 +10,9 @@ import colors from "colors/safe.js";
 export default function (req, res, next) {
   const method = colors.cyan(req.method);
   const protocol = colors.yellow(req.protocol);
+  const status = colors.yellow(res.statusCode);
   const path = req.path;
 
-  consola.info(`${method} ${protocol} - ${path}`);
+  consola.info(`${method} ${protocol} ${status} - ${path}`);
   next();
 }
