@@ -74,7 +74,7 @@ function setExpiredTokenInterceptor(previousRequestInterceptor) {
 }
 
 export async function configure() {
-  consola.debug(prefix, "Starting oauth configuration");
+  consola.debug(prefix, "Starting internal client token configuration");
   const authorization = await fetchToken();
   consola.debug(prefix, "Bearer token fetched");
   const preRequestInterceptor = setAuthorizationHeaderInterceptor(

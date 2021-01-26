@@ -1,8 +1,6 @@
 import colors from "colors/safe.js";
 import consola from "consola";
 import Express from "express";
-import cors from "cors";
-import bodyParser from "body-parser";
 
 import setup from "./setup.js";
 
@@ -16,13 +14,6 @@ consola.debug(
   "Allowing the following origin (CORS)",
   process.env.APP_ALLOWED_ORIGIN
 );
-
-app.use(
-  cors({
-    origin: process.env.APP_ALLOWED_ORIGIN,
-  })
-);
-app.use(bodyParser.json());
 
 setup(app)
   .then(() => {

@@ -1,4 +1,8 @@
 import consola from "consola";
+import cors from "cors";
+import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
+
 import { configure as configureOsuServiceGrant } from "./services/osu/token.js";
 import { configure as configureDatabase } from "./services/database.js";
 import { configure as configureOauth } from "./services/oauth.js";
@@ -10,8 +14,15 @@ const handleError = (service) => (error) => {
 };
 
 export default async function setup(app) {
-  // Register trafficlogger middleware
+  app.use(
+    cors({
+      origin: process.env.APP_ALLOWED_ORIGIN,
+    })
+  );
+  app.use(cookieParser());
+  app.use(bodyParser.json());
   app.use(trafficLogger);
+
   await Promise.all([
     configureOauth(app).catch(handleError("configure oauth")),
     configureRoutes(app).catch(handleError("configure routes")),

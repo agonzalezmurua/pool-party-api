@@ -2,12 +2,14 @@ import axios from "axios";
 import consola from "consola";
 import colors from "colors/safe.js";
 import { encode } from "querystring";
-import { BASE_URL, PATH, CLIENT_ID, CLIENT_SECRET } from "../../osu.js";
+
 import Db from "../../../controllers/database.js";
+import { BASE_URL, PATH, CLIENT_ID, CLIENT_SECRET } from "../../osu.js";
+import { issueAuthentication } from "../jwt.js";
 
-const prefix = `${colors.magenta("[OSU]")}-${colors.cyan("[OAUTH]")}`;
+const prefix = `${colors.magenta("[OSU]")}${colors.cyan("[OAUTH]")}`;
 
-const redirect_uri = process.env.APP_PATH + process.env.OSU_OAUTH_CALLBACK_URI;
+const redirect_uri = process.env.APP_URL + process.env.OSU_OAUTH_CALLBACK_URI;
 /**
  *
  * @param {import('express').Request} req
@@ -56,8 +58,6 @@ export async function handleAuthentication(req, res) {
       data: { token_type, access_token },
     } = await client.post("/oauth/token", encode(payload));
 
-    consola.debug(prefix, "succesful response from oauth");
-
     consola.debug(prefix, "adding interceptor for further requests");
     // Add interceptor for further requests
     client.interceptors.request.use((config) => {
@@ -67,7 +67,6 @@ export async function handleAuthentication(req, res) {
       return config;
     });
 
-    // Get user information
     consola.debug(prefix, "obtaining user information");
     const {
       data: { id, username },
@@ -84,10 +83,17 @@ export async function handleAuthentication(req, res) {
       consola.debug(prefix, "user does not exist, creating");
       user = new Db.User({ osu_id: id, username: username });
       await user.save();
+    } else {
+      consola.debug(prefix, "user exists");
     }
 
-    // TODO: Provide some sort of JWT that allows user to identify here
-    res.json(user);
+    consola.debug(prefix, "issuing authentication token");
+    res.json(
+      issueAuthentication({
+        id: user.id,
+        osu_id: user.osu_id,
+      })
+    );
   } catch (error) {
     consola.error(error);
     res.status(error.response.status);

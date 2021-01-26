@@ -1,6 +1,8 @@
 # General APP config
 APP_PORT=
 APP_ALLOWED_ORIGIN=
+## Authentication Flow
+APP_AUTH_SECRET=
 
 # Osu Api integration
 OSU_API_CLIENT_ID=

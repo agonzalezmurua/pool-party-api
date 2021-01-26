@@ -9,8 +9,15 @@ export default function errorHandler(err, req, res, next) {
     return next(err);
   }
 
-  if (res.statusCode === 200) {
-    res.status(500);
+  switch (err.name) {
+    case "UnauthenticatedError":
+      res.status(401);
+    case "UnauthorizedError":
+      res.status(403);
+      break;
+    default:
+      res.status(500);
+      break;
   }
 
   res.json({
