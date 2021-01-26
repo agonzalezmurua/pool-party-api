@@ -4,9 +4,9 @@
   "watch": [
     "controllers/*",
     "middlewares/*",
-    "models/*",
-    "services/*",
     "routes/*",
+    "schemas/*",
+    "services/*",
     ".env.*"
   ],
   "delay": 500

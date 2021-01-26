@@ -8,20 +8,18 @@ import ensureAuthenticated from "../middlewares/ensureAuthenticated.js";
 
 const router = express.Router();
 
-router.get("/", async (req, res) => {
+router.get("/latest", async (req, res) => {
   const beatmaps = await Db.Beatmapset.find()
     .sort({ created_at: -1 })
-    .select("-reference.beatmaps -added_by")
+    .select("-reference.beatmaps")
     .limit(50);
+
   res.send(beatmaps);
 });
 
 router.get("/:id", async (req, res, next) => {
   try {
-    const osu_id = req.params.id;
-    const document = await Db.Beatmapset.findOne({
-      "reference.id": Number(osu_id),
-    });
+    const document = await Db.Beatmapset.findById(req.params.id);
 
     if (!document) {
       res.status(404);
@@ -35,14 +33,20 @@ router.get("/:id", async (req, res, next) => {
   }
 });
 
+router.get("/search", (req, res) => {
+  res.status(501).json(null);
+});
+
 router.post(
   "/",
   ensureAuthenticated,
   parseSchema(Db.Beatmapset, false),
   async (req, res, next) => {
     try {
-      const { document } = req;
-      const { osu_id } = document;
+      const {
+        document,
+        body: { osu_id },
+      } = req;
 
       if (await Db.Beatmapset.findOne({ osu_id })) {
         res.status(409);
