@@ -65,19 +65,18 @@ TournamentSchema.post("save", async function (tournament) {
         $pull: { used_in: tournament._id },
       }
     );
-  }
-
-  // Update all references
-  await Db.Pool.updateMany(
-    {
-      _id: {
-        $in: [...tournament.pools],
+    // Update all references
+    await Db.Pool.updateMany(
+      {
+        _id: {
+          $in: [...tournament.pools],
+        },
       },
-    },
-    {
-      $push: { used_in: tournament._id },
-    }
-  );
+      {
+        $push: { used_in: tournament._id },
+      }
+    );
+  }
 });
 
 TournamentSchema.post("remove", async function (tournament) {

@@ -13,7 +13,12 @@ const PoolSchema = new mongoose.Schema(
       type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Beatmapset" }],
     },
     used_in: {
-      type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Tournament" }],
+      type: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Tournament",
+        },
+      ],
     },
   },
   {
