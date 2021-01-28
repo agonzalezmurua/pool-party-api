@@ -42,7 +42,9 @@ function MapBeatmapsetToDocument(set) {
 router.get("/", async (req, res) => {
   const { search = "" } = req.query;
 
-  const beatmapsets = await Beatmapset.fuzzySearch(search);
+  const beatmapsets = await Beatmapset.fuzzySearch(search)
+    .sort({ created_at: -1 })
+    .select("-confidenceScore");
 
   res.json(beatmapsets);
 });
@@ -50,7 +52,7 @@ router.get("/", async (req, res) => {
 router.get("/latest", async (req, res) => {
   const beatmaps = await Beatmapset.find()
     .sort({ created_at: -1 })
-    .select("-reference.beatmaps")
+    .select("-beatmaps")
     .limit(50);
 
   res.send(beatmaps);

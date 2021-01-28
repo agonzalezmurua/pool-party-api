@@ -5,7 +5,7 @@ const router = Express.Router();
 
 router.get("/", async (req, res) => {
   const { search } = req.query;
-  const users = await Db.User.fuzzySearch(search);
+  const users = await Db.User.fuzzySearch(search).select(["-confidenceScore"]);
   res.json(users);
 });
 
