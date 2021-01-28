@@ -6,6 +6,7 @@ const BeatmapsetSchema = new mongoose.Schema(
     added_by: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
+      select: false,
     },
     osu_id: {
       type: Number,
