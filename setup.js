@@ -3,11 +3,11 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 
-import { configure as configureOsuServiceGrant } from "./services/osu/token.js";
-import { configure as configureDatabase } from "./services/database.js";
-import { configure as configureOauth } from "./services/oauth.js";
-import { configure as configureRoutes } from "./routes/index.js";
-import trafficLogger from "./middlewares/trafficLogger.js";
+import { configure as configureOsuServiceGrant } from "./services/osu/token";
+import { configure as configureDatabase } from "./services/database";
+import { configure as configureOauth } from "./services/oauth";
+import { configure as configureRoutes } from "./routes/index";
+import trafficLogger from "./middlewares/trafficLogger";
 
 const handleError = (service) => (error) => {
   consola.error("failed to", service + ":\n", error);

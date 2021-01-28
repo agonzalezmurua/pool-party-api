@@ -1,9 +1,9 @@
 import Express from "express";
-import colors from "colors/safe.js";
+import colors from "colors/safe";
 import {
   requestAuthorization as osuAuthorization,
   handleAuthentication as osuAuthentication,
-} from "./oauth/providers/osu.js";
+} from "./oauth/providers/osu";
 
 const path = "/oauth";
 

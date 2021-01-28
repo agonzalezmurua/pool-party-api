@@ -1,24 +1,24 @@
 import Express from "express";
 
-import Db from "../controllers/database.js";
-import { ensureAuthenticated } from "../services/oauth/jwt.js";
-import parseSchema from "../middlewares/parseSchema.js";
+import * as Db from "../providers/database";
+import { ensureAuthenticated } from "../services/oauth/jwt";
+import parseSchema from "../middlewares/parseSchema";
 
 const router = Express.Router();
 
-router.get("/latest", async (req, res) => {
-  const tournaments = await Db.Tournament.find()
-    .sort({ created_at: -1 })
-    .populate(["created_by", { path: "pools", select: "_id name" }])
-    .limit(50);
-  res.send(tournaments);
-});
-
-router.get("/search", (req, res) => {
+router.get("/", (req, res) => {
   res.status(501).json(null);
 });
 
-router.get("/", ensureAuthenticated, async (req, res) => {
+router.get("/latest", async (req, res) => {
+  const pools = await Db.Pool.find()
+    .sort({ created_at: -1 })
+    .populate(["created_by", { path: "pools", select: "_id name" }])
+    .limit(50);
+  res.send(pools);
+});
+
+router.get("/mine", ensureAuthenticated, async (req, res) => {
   const pools = await Db.Pool.find({ created_by: req.user.id })
     .populate([
       { path: "beatmapsets", select: "-reference" },
@@ -35,7 +35,7 @@ router.post(
   parseSchema(Db.Pool, false),
   async (req, res, next) => {
     const { document, user } = req;
-    document.created_by = await Db.User.findById(user.id);
+    document.created_by = await Db.Users.findById(user.id);
 
     try {
       await document.save();

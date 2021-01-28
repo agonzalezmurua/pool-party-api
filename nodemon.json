@@ -1,13 +1,5 @@
 {
   "verbose": true,
-  "ignore": ["node_modules/*"],
-  "watch": [
-    "controllers/*",
-    "middlewares/*",
-    "routes/*",
-    "schemas/*",
-    "services/*",
-    ".env.*"
-  ],
+  "ignore": ["node_modules/*", ".vscode"],
   "delay": 500
 }

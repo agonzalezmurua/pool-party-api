@@ -1,5 +1,5 @@
 import consola from "consola";
-import colors from "colors/safe.js";
+import colors from "colors/safe";
 
 /**
  * Logger that tracks every request
@@ -9,9 +9,9 @@ import colors from "colors/safe.js";
  */
 export default function (req, res, next) {
   res.on("finish", function () {
-    const method = colors.cyan(req.method);
+    const method = colors.cyan(req.method.padEnd(6));
     const protocol = colors.yellow(req.protocol);
-    const path = req.path;
+    const path = req.originalUrl;
     const code = colors.yellow(this.statusCode);
     consola.info(`${method} ${protocol} ${code} - ${path}`);
   });

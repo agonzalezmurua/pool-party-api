@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import mongoose_fuzzy_searching from "mongoose-fuzzy-searching";
 
 export const roles = {
   admin: "admin",
@@ -22,4 +23,12 @@ const UserSchema = new mongoose.Schema(
   }
 );
 
-export default UserSchema;
+UserSchema.plugin(mongoose_fuzzy_searching, {
+  fields: [
+    {
+      name: "username",
+    },
+  ],
+});
+
+export default mongoose.model("User", UserSchema);

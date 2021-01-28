@@ -1,30 +1,38 @@
 import Express from "express";
 
-import Db from "../controllers/database.js";
-import { ensureAuthenticated } from "../services/oauth/jwt.js";
-import parseSchema from "../middlewares/parseSchema.js";
-import { ValidationError } from "../utils/errors.js";
-import { statuses } from "../schemas/tournament.js";
+import Tournament, { statuses } from "../providers/database/tournament";
+import { ensureAuthenticated } from "../services/oauth/jwt";
+import parseSchema from "../middlewares/parseSchema";
 
 const router = Express.Router();
 
+router.get("/", async (req, res) => {
+  const { query = "" } = req.query;
+
+  const tournaments = await Tournament.fuzzySearch({ query })
+    .sort({
+      confidenceScore: -1,
+    })
+    .populate("created_by")
+    .select(["-confidenceScore"])
+    .limit(50);
+
+  res.json(tournaments);
+});
+
 router.get("/latest", async (req, res) => {
-  const tournaments = await Db.Tournament.find()
+  const tournaments = await Tournament.find()
     .sort({ created_at: -1 })
     .populate(["created_by", { path: "pools", select: "_id name" }])
     .limit(50);
   res.send(tournaments);
 });
 
-router.get("/search", (req, res) => {
-  res.status(501).json(null);
-});
-
-router.get("/", ensureAuthenticated, async (req, res) => {
-  const tournaments = await Db.Tournament.find({
+router.get("/mine", ensureAuthenticated, async (req, res) => {
+  const tournaments = await Tournament.find({
     created_by: req.user.id,
   })
-    .populate(["created_by", { path: "pools", select: "_id name" }])
+    .populate([{ path: "pools", select: "_id name" }])
     .select("-created_by");
   res.json(tournaments);
 });
@@ -32,7 +40,7 @@ router.get("/", ensureAuthenticated, async (req, res) => {
 router.post(
   "/",
   ensureAuthenticated,
-  parseSchema(Db.Tournament, false),
+  parseSchema(Tournament, false),
   async (req, res, next) => {
     const { document } = req;
     document.created_by = req.user.id;
@@ -54,34 +62,24 @@ router.post(
 
 router.patch("/:id", ensureAuthenticated, async (req, res, next) => {
   const { id } = req.params;
-  const { name, pools, status } = req.body;
+  const { name, pools = [], status } = req.body;
 
-  const tournament = await Db.Tournament.findById(id);
+  const exists = await Tournament.exists({
+    _id: id,
+    created_by: req.user.id,
+    status: statuses.active,
+  });
 
-  if (!tournament) {
-    res.status(404).json(null);
-    return;
-  }
-
-  if (tournament.created_by != req.user.id) {
+  if (exists === false) {
     res.status(403).json(null);
     return;
   }
 
-  if ([statuses.inactive, statuses.legacy].includes(tournament.status)) {
-    next(
-      new ValidationError(
-        "Current tournament status prevents any further modifications"
-      )
-    );
-    return;
-  }
-
-  tournament.name = name || tournament.name;
-  tournament.pools = pools || tournament.pools;
-  tournament.status = status || tournament.status;
-
-  await tournament.save();
+  const tournament = await Tournament.findByIdAndUpdate(
+    id,
+    { name, pools, status },
+    { new: true, runValidators: true }
+  );
 
   res.json(tournament);
 });
@@ -89,7 +87,7 @@ router.patch("/:id", ensureAuthenticated, async (req, res, next) => {
 router.delete("/:id", ensureAuthenticated, async (req, res) => {
   const { id } = req.params;
 
-  const tournament = await Db.Tournament.findById(id);
+  const tournament = await Tournament.findById(id);
 
   if (!tournament) {
     res.status(404).json(null);

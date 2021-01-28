@@ -1,11 +1,12 @@
 import axios from "axios";
 import consola from "consola";
-import colors from "colors/safe.js";
+import colors from "colors/safe";
 import { encode } from "querystring";
 
-import Db from "../../../controllers/database.js";
-import { BASE_URL, PATH, CLIENT_ID, CLIENT_SECRET } from "../../osu.js";
-import { issueAuthentication } from "../jwt.js";
+import User from "../../../providers/database/user";
+
+import { BASE_URL, PATH, CLIENT_ID, CLIENT_SECRET } from "../../osu";
+import { issueAuthentication } from "../jwt";
 
 const prefix = `${colors.magenta("[OSU]")}${colors.cyan("[OAUTH]")}`;
 
@@ -77,11 +78,11 @@ export async function handleAuthentication(req, res) {
     await client.delete(`${PATH}/oauth/tokens/current`);
 
     consola.debug(prefix, "retrieving user from database");
-    let user = await Db.User.findOne({ osu_id: id });
+    let user = await User.findOne({ osu_id: id });
 
     if (!user) {
       consola.debug(prefix, "user does not exist, creating");
-      user = new Db.User({ osu_id: id, username: username });
+      user = new User({ osu_id: id, username: username });
       await user.save();
     } else {
       consola.debug(prefix, "user exists");

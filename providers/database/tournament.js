@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
+import mongoose_fuzzy_searching from "mongoose-fuzzy-searching";
 
-import Db from "../controllers/database.js";
+import Pool from "./pool";
 
 export const statuses = {
   active: "active",
@@ -18,6 +19,7 @@ const TournamentSchema = new mongoose.Schema(
     name: {
       type: String,
       required: true,
+      minlength: 3,
     },
     created_by: {
       type: mongoose.Types.ObjectId,
@@ -26,16 +28,17 @@ const TournamentSchema = new mongoose.Schema(
     },
     pools: {
       type: [{ type: mongoose.Types.ObjectId, ref: "Pool" }],
+      minlength: 1,
       validate: [
         {
           validator: function (value) {
-            value.length >= 1;
+            return Array.isArray(value) && value.length >= 1;
           },
           message: "needs at least 1 entry",
         },
         {
           validator: async function (pools) {
-            const docs = await Db.Pool.find({
+            const docs = await Db.Pools.find({
               _id: {
                 $in: [...pools],
               },
@@ -52,10 +55,10 @@ const TournamentSchema = new mongoose.Schema(
   }
 );
 
+//#region  Middlewares
 TournamentSchema.post("save", async function (tournament) {
-  // If modifying values, remove all references
   if (tournament.isModified("pools")) {
-    await Db.Pool.updateMany(
+    await Pool.updateMany(
       {
         _id: {
           $in: [...tournament.pools],
@@ -66,7 +69,7 @@ TournamentSchema.post("save", async function (tournament) {
       }
     );
     // Update all references
-    await Db.Pool.updateMany(
+    await Pool.updateMany(
       {
         _id: {
           $in: [...tournament.pools],
@@ -81,7 +84,7 @@ TournamentSchema.post("save", async function (tournament) {
 
 TournamentSchema.post("remove", async function (tournament) {
   // Remove tournament reference from pools
-  await Db.Pool.updateMany(
+  await Pool.updateMany(
     {
       _id: {
         $in: [...tournament.pools],
@@ -92,5 +95,18 @@ TournamentSchema.post("remove", async function (tournament) {
     }
   );
 });
+//#endregion
 
-export default TournamentSchema;
+TournamentSchema.plugin(mongoose_fuzzy_searching, {
+  fields: [
+    {
+      name: "name",
+    },
+    {
+      name: "status",
+      prefixOnly: true,
+    },
+  ],
+});
+
+export default mongoose.model("Tournament", TournamentSchema);

@@ -1,9 +1,19 @@
 import mongoose from "mongoose";
+import mongoose_fuzzy_searching from "mongoose-fuzzy-searching";
+
+export const statuses = {
+  draft: "draft",
+  public: "public",
+};
 
 const PoolSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
-    is_draft: { type: Boolean, default: true },
+    status: {
+      type: String,
+      default: statuses.draft,
+      enum: [statuses.draft, statuses.public],
+    },
     created_by: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -26,4 +36,17 @@ const PoolSchema = new mongoose.Schema(
   }
 );
 
-export default PoolSchema;
+PoolSchema.plugin(mongoose_fuzzy_searching, {
+  fields: [
+    {
+      name: "name",
+      prefixOnly: true,
+    },
+    {
+      name: "status",
+      prefixOnly: true,
+    },
+  ],
+});
+
+export default mongoose.model("Pool", PoolSchema);

@@ -1,6 +1,6 @@
 import consola from "consola";
 import mongoose from "mongoose";
-import colors from "colors/safe.js";
+import colors from "colors/safe";
 
 const prefix = colors.green(`[DBM]`);
 
@@ -13,6 +13,8 @@ export async function configure() {
     await mongoose.connect(connectionString, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
+      useFindAndModify: false,
+      useCreateIndex: true,
     });
 
     consola.success(prefix, "Database has connected");

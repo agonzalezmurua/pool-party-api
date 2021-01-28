@@ -1,8 +1,8 @@
-import colors from "colors/safe.js";
+import colors from "colors/safe";
 import consola from "consola";
 import Express from "express";
 
-import setup from "./setup.js";
+import setup from "./setup";
 
 export const prefix = colors.cyan(`[APP]`);
 consola.info(prefix, "running on environment", `"${process.env.NODE_ENV}"`);

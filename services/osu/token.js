@@ -1,6 +1,6 @@
 import axios from "axios";
 import { encode } from "querystring";
-import { client, BASE_URL, prefix, CLIENT_ID, CLIENT_SECRET } from "../osu.js";
+import { client, BASE_URL, prefix, CLIENT_ID, CLIENT_SECRET } from "../osu";
 
 const oauth = axios.create({
   baseURL: `${BASE_URL}`,

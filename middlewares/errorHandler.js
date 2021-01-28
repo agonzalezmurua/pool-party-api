@@ -1,3 +1,5 @@
+import consola from "consola";
+
 /**
  * @param {Error} err
  * @param {import('express').Request} req
@@ -29,6 +31,8 @@ export default function errorHandler(err, req, res, next) {
       res.status(500);
       break;
   }
+
+  consola.error(error);
 
   res.json({
     error: error,

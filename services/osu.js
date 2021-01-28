@@ -1,5 +1,5 @@
 import axios from "axios";
-import colors from "colors/safe.js";
+import colors from "colors/safe";
 import consola from "consola";
 
 export const CLIENT_ID = process.env.OSU_API_CLIENT_ID;
