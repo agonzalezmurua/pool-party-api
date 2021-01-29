@@ -17,14 +17,14 @@ const redirect_uri = config.get("web.url") + config.get("web.osu_callback");
  */
 export function requestAuthorization(req, res) {
   const parameters = {
-    client_id: config("osu.api.client_id"), // The Client ID you received when you registered
+    client_id: config.get("osu.api.client_id"), // The Client ID you received when you registered
     redirect_uri: redirect_uri, // The URL in your application where users will be sent after authorization. This must match the registered Application Callback URL exactly.
     response_type: "code", // This should always be code when requesting authorization.
     scope: ["identify"].join(" "), // A space-delimited string of scopes.
   };
 
   const path = "/oauth/authorize";
-  const url = new URL(path, config("osu.base_url"));
+  const url = new URL(path, config.get("osu.base_url"));
 
   Object.entries(parameters).forEach(([name, value]) => {
     url.searchParams.append(name, value);
@@ -41,12 +41,12 @@ export function requestAuthorization(req, res) {
  */
 export async function handleAuthentication(req, res) {
   const client = axios.create({
-    baseURL: BASE_URL,
+    baseURL: config.get("osu.base_url"),
   });
   const { code } = req.body;
   const payload = {
     code: code, //The code you received.
-    client_id: config("osu.api.client_id"), // The client ID of your application.
+    client_id: config.get("osu.api.client_id"), // The client ID of your application.
     client_secret: process.env.OSU_API_SECRET, //	The client secret of your application.
     grant_type: "authorization_code", //	This must always be authorization_code
     redirect_uri: redirect_uri, //	The URL in your application where users will be sent after authorization.
@@ -73,11 +73,11 @@ export async function handleAuthentication(req, res) {
     consola.debug(prefixes.oauth_osu, "obtaining user information");
     const {
       data: { id, username },
-    } = await client.get(`${PATH}/me`);
+    } = await client.get(`${config.get("osu.api.path")}/me`);
 
     // Revoke current token to prevent further accidental usage
     consola.debug(prefixes.oauth_osu, "revoking osu token");
-    await client.delete(`${PATH}/oauth/tokens/current`);
+    await client.delete(`${config.get("osu.api.path")}/oauth/tokens/current`);
 
     consola.debug(prefixes.oauth_osu, "retrieving user from database");
     let user = await User.findOne({ osu_id: id });

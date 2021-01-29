@@ -3,7 +3,7 @@ import colors from "colors/safe";
 import cors from "cors";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
-import config from 'config';
+import config from "config";
 
 import prefixes from "./constants/consola_prefixes";
 import { configure as configureOsuClient } from "./services/osu.configure";
@@ -34,6 +34,7 @@ export default async function setup(app) {
   );
   app.use(cookieParser());
   app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({ extended: true }));
   app.use(trafficLogger);
 
   await Promise.all([
