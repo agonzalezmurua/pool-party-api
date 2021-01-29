@@ -90,8 +90,7 @@ router.post("/", ensureAuthenticated, async (req, res) => {
   const document = new Beatmapset(MapBeatmapsetToDocument(set));
   document.added_by = req.user.id;
 
-  await document.validate();
-  await document.save();
+  await document.save({ validateBeforeSave: true });
 
   res.json(document);
 });

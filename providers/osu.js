@@ -1,4 +1,4 @@
-import { client, PATH } from "../services/osu";
+import { client, PATH } from "../services/osu.configure";
 
 export default {
   beatmapset: {

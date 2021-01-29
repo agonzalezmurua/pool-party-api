@@ -2,7 +2,8 @@
   "name": "pool-party-api",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
+  "module": "app.js",
   "dependencies": {
     "axios": "^0.21.1",
     "body-parser": "^1.19.0",

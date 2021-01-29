@@ -2,7 +2,7 @@ import consola from "consola";
 import inquirer from "inquirer";
 
 import * as Db from "../providers/database";
-import { configure as configureDatabase } from "../services/database";
+import { configure as configureDatabase } from "../services/database.configure";
 import { deleteNgrams, updateNgrams } from "./batch_operations";
 
 async function askForModel() {

@@ -1,8 +1,7 @@
 import Express from "express";
 
 import Tournament, { statuses } from "../providers/database/tournament";
-import { ensureAuthenticated } from "../services/oauth/jwt";
-import parseSchema from "../middlewares/parseSchema";
+import { ensureAuthenticated } from "../services/oauth/authentication";
 
 const router = Express.Router();
 
@@ -37,30 +36,16 @@ router.get("/mine", ensureAuthenticated, async (req, res) => {
   res.json(tournaments);
 });
 
-router.post(
-  "/",
-  ensureAuthenticated,
-  parseSchema(Tournament, false),
-  async (req, res, next) => {
-    const { document } = req;
-    document.created_by = req.user.id;
-    const errors = document.validateSync();
-    if (errors) {
-      next(errors);
-    }
+router.post("/", ensureAuthenticated, async (req, res) => {
+  const document = new Tournament(req.body);
+  document.created_by = req.user.id;
 
-    try {
-      await document.save();
-    } catch (error) {
-      next(error);
-      return;
-    }
+  await document.save({ validateBeforeSave: true });
 
-    res.json(document);
-  }
-);
+  res.json(document);
+});
 
-router.patch("/:id", ensureAuthenticated, async (req, res, next) => {
+router.patch("/:id", ensureAuthenticated, async (req, res) => {
   const { id } = req.params;
   const { name, pools = [], status } = req.body;
 

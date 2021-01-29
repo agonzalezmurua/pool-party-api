@@ -1,13 +1,17 @@
 import jwt from "jsonwebtoken";
 
-const secret = process.env.APP_AUTH_SECRET;
-const algorithm = "HS256";
-const expiration = 60 * 60 * 24 * 7; // 2 days
+const SECRET = process.env.APP_AUTH_SECRET;
+const ALGORITHM = "HS256";
+const EXPIRATION = 60 * 60 * 24 * 2; // 2 days
 
+/**
+ * Signs a given object and creates a Json Web Token
+ * @param {Object} payload
+ */
 function sign(payload) {
-  return jwt.sign(payload, secret, {
-    expiresIn: expiration,
-    algorithm: algorithm,
+  return jwt.sign(payload, SECRET, {
+    expiresIn: EXPIRATION,
+    algorithm: ALGORITHM,
   });
 }
 
@@ -36,7 +40,7 @@ class UnauthorizedError extends Error {
 export const issueAuthentication = (payload) => {
   return {
     token_type: "Bearer",
-    expires_in: expiration,
+    expires_in: EXPIRATION,
     access_token: sign(payload),
   };
 };
@@ -67,7 +71,7 @@ export const ensureAuthenticated = (req, res, next) => {
   let payload;
 
   try {
-    payload = jwt.verify(access_token, secret);
+    payload = jwt.verify(access_token, SECRET);
   } catch (err) {
     next(new UnauthorizedError());
     return;

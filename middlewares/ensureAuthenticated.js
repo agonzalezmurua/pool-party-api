@@ -1,1 +1,1 @@
-export { ensureAuthenticated as default } from "../services/oauth/jwt";
+export { ensureAuthenticated as default } from "../services/oauth/authentication";

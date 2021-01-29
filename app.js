@@ -1,27 +1,30 @@
 import colors from "colors/safe";
 import consola from "consola";
 import Express from "express";
+export const prefix = colors.cyan(`[APP]`);
 
 import setup from "./setup";
 
-export const prefix = colors.cyan(`[APP]`);
-consola.info(prefix, "running on environment", `"${process.env.NODE_ENV}"`);
+consola.info(
+  prefix,
+  "Running on environment",
+  `${colors.yellow(process.env.NODE_ENV)}`
+);
+
 const app = Express();
 const port = process.env.APP_PORT || 3000;
-
-consola.debug(
-  prefix,
-  "Allowing the following origin (CORS)",
-  process.env.APP_ALLOWED_ORIGIN
-);
 
 setup(app)
   .then(() => {
     const server = app.listen(port);
     server.on("listening", () => {
-      consola.success("app is ready and listening to port", port);
+      consola.success(
+        prefix,
+        "App is ready and listening to port",
+        colors.yellow(port)
+      );
     });
   })
   .catch((error) => {
-    consola.error("App startup failed", error);
+    consola.error(prefix, "App startup failed", error);
   });

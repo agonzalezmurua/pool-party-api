@@ -1,8 +1,7 @@
 import Express from "express";
 
-import * as Db from "../providers/database";
-import { ensureAuthenticated } from "../services/oauth/jwt";
-import parseSchema from "../middlewares/parseSchema";
+import Pool from "../providers/database/pool";
+import { ensureAuthenticated } from "../services/oauth/authentication";
 
 const router = Express.Router();
 
@@ -11,7 +10,7 @@ router.get("/", (req, res) => {
 });
 
 router.get("/latest", async (req, res) => {
-  const pools = await Db.Pool.find()
+  const pools = await Pool.find()
     .sort({ created_at: -1 })
     .populate(["created_by", { path: "pools", select: "_id name" }])
     .limit(50);
@@ -19,7 +18,7 @@ router.get("/latest", async (req, res) => {
 });
 
 router.get("/mine", ensureAuthenticated, async (req, res) => {
-  const pools = await Db.Pool.find({ created_by: req.user.id })
+  const pools = await Pool.find({ created_by: req.user.id })
     .populate([
       { path: "beatmapsets", select: "-reference" },
       { path: "used_in", select: "_id name" },
@@ -29,28 +28,23 @@ router.get("/mine", ensureAuthenticated, async (req, res) => {
   res.json(pools);
 });
 
-router.post(
-  "/",
-  ensureAuthenticated,
-  parseSchema(Db.Pool, false),
-  async (req, res, next) => {
-    const { document, user } = req;
-    document.created_by = await Db.Users.findById(user.id);
+router.post("/", ensureAuthenticated, async (req, res, next) => {
+  const document = new Pool(req.body);
+  document.created_by = req.user.id;
 
-    try {
-      await document.save();
-    } catch (error) {
-      next(error);
-      return;
-    }
-
-    res.json(document);
+  try {
+    await document.save({ validateBeforeSave: true });
+  } catch (error) {
+    next(error);
+    return;
   }
-);
+
+  res.json(document);
+});
 
 router.patch("/:id", ensureAuthenticated, async (req, res) => {
   const { name, beatmapsets } = req.body;
-  const pool = await Db.Pool.findById(req.params.id);
+  const pool = await Pool.findById(req.params.id);
 
   if (!pool) {
     res.status(404).json(null);
@@ -69,13 +63,13 @@ router.patch("/:id", ensureAuthenticated, async (req, res) => {
     ? beatmapsets
     : pool.beatmapsets;
 
-  await pool.save();
+  await pool.save({ validateBeforeSave: true });
 
   res.json(pool);
 });
 
 router.delete("/:id", ensureAuthenticated, async (req, res, next) => {
-  const pool = await Db.Pool.findById(req.params.id);
+  const pool = await Pool.findById(req.params.id);
 
   if (!pool) {
     res.status(404).json(null);

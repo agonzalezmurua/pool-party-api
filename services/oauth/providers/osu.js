@@ -5,14 +5,15 @@ import { encode } from "querystring";
 
 import User from "../../../providers/database/user";
 
-import { BASE_URL, PATH, CLIENT_ID, CLIENT_SECRET } from "../../osu";
-import { issueAuthentication } from "../jwt";
+import { BASE_URL, PATH, CLIENT_ID, CLIENT_SECRET } from "../../osu.configure";
+import { issueAuthentication } from "../authentication";
 
 const prefix = `${colors.magenta("[OSU]")}${colors.cyan("[OAUTH]")}`;
 
 const redirect_uri = process.env.APP_URL + process.env.OSU_OAUTH_CALLBACK_URI;
+
 /**
- *
+ * Redirects
  * @param {import('express').Request} req
  * @param {import('express').Response} res
  */

@@ -1,16 +1,18 @@
 import consola from "consola";
 import mongoose from "mongoose";
 
-const IGNORED_ATTRIBUTES = ["_id", "__v", "created_at", "updated_at"];
-
 /**
+ * Removes certain attributes from the object such as:
+ * - ids
+ * - timestamps
+ * - mongoose `__v` attribute
  * @param {import('mongoose').Model} Model
  * @param {string[]} attrs
  */
 function cleanupAttributes(Model, attrs) {
   return attrs.filter((k) => {
     return (
-      !IGNORED_ATTRIBUTES.includes(k) &&
+      !["_id", "__v", "created_at", "updated_at"].includes(k) &&
       !(Model.schema.path(k) instanceof mongoose.Schema.Types.ObjectId)
     );
   });
@@ -40,6 +42,8 @@ export async function updateNgrams(Model, attrs) {
 
 /**
  * Deletes ngrams of a model
+ *
+ * **Note**: this does not remove attributes that were removed from the schema
  * @param {import('mongoose').Model} Model
  * @param {string[]} attrs
  */

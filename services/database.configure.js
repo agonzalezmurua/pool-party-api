@@ -4,13 +4,21 @@ import colors from "colors/safe";
 
 const prefix = colors.green(`[DBM]`);
 
+/**
+ * Creates initial configuration and connects to the database
+ * @returns {Promise<void>}
+ */
 export async function configure() {
-  const connectionString = `mongodb://${process.env.MONGO_CONNECTION_DOMAIN}/${process.env.MONGO_DATABASE_NAME}`;
+  const connectionUri = `mongodb://${process.env.MONGO_CONNECTION_DOMAIN}/${process.env.MONGO_DATABASE_NAME}`;
   try {
-    consola.debug(prefix, "Using string connection", connectionString);
+    consola.debug(
+      prefix,
+      "Using string connection",
+      colors.yellow(connectionUri)
+    );
     consola.debug(prefix, "Attempting to connect to database");
 
-    await mongoose.connect(connectionString, {
+    await mongoose.connect(connectionUri, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useFindAndModify: false,
