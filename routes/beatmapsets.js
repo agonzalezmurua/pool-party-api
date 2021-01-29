@@ -43,8 +43,10 @@ router.get("/", async (req, res) => {
   const { search = "" } = req.query;
 
   const beatmapsets = await Beatmapset.fuzzySearch(search)
-    .sort({ created_at: -1 })
-    .select("-confidenceScore");
+    .sort({ created_at: -1, created_at: -1 })
+    .select("-confidenceScore")
+    .limit(50)
+    .exec();
 
   res.json(beatmapsets);
 });
@@ -53,13 +55,14 @@ router.get("/latest", async (req, res) => {
   const beatmaps = await Beatmapset.find()
     .sort({ created_at: -1 })
     .select("-beatmaps")
-    .limit(50);
+    .limit(50)
+    .exec();
 
   res.send(beatmaps);
 });
 
 router.get("/:id", async (req, res) => {
-  const document = await Beatmapset.findById(req.params.id);
+  const document = await Beatmapset.findById(req.params.id).exec();
 
   if (!document) {
     res.status(404);

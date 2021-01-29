@@ -9,8 +9,11 @@ router.get("/", async (req, res) => {
   const { search = "" } = req;
 
   const pools = await Pool.fuzzySearch(search)
-    .sort({ created_at: -1 })
-    .select("-confidenceScore");
+    .sort({ confidenceScore: -1, created_at: -1 })
+    .populate("created_by")
+    .select("-confidenceScore")
+    .limit(50)
+    .exec();
 
   res.json(pools);
 });
@@ -19,17 +22,20 @@ router.get("/latest", async (req, res) => {
   const pools = await Pool.find()
     .sort({ created_at: -1 })
     .populate(["created_by", { path: "pools", select: "_id name" }])
-    .limit(50);
+    .limit(50)
+    .exec();
+
   res.send(pools);
 });
 
 router.get("/mine", ensureAuthenticated, async (req, res) => {
   const pools = await Pool.find({ created_by: req.user.id })
     .populate([
-      { path: "beatmapsets", select: "-reference" },
+      { path: "beatmapsets", select: "title artist creator _id" },
       { path: "used_in", select: "_id name" },
     ])
-    .select("-created_by");
+    .select("-created_by")
+    .exec();
 
   res.json(pools);
 });
@@ -38,12 +44,7 @@ router.post("/", ensureAuthenticated, async (req, res, next) => {
   const document = new Pool(req.body);
   document.created_by = req.user.id;
 
-  try {
-    await document.save({ validateBeforeSave: true });
-  } catch (error) {
-    next(error);
-    return;
-  }
+  await document.save({ validateBeforeSave: true });
 
   res.json(document);
 });
