@@ -14,21 +14,12 @@ function sign(payload) {
     algorithm: ALGORITHM,
   });
 }
-
-class UnauthenticatedError extends Error {
-  constructor() {
-    super();
-    this.name = "UnauthenticatedError";
-    this.message = "Failed to authenticate user";
-  }
-}
-
-class UnauthorizedError extends Error {
-  constructor() {
-    super();
-    this.name = "UnauthorizedError";
-    this.message = "Failed to idenfity user's identity";
-  }
+/**
+ * Attemps to verify JWT signature
+ * @param {string} token
+ */
+export function verifyJwt(token) {
+  return jwt.verify(token, SECRET);
 }
 
 /**
@@ -43,42 +34,4 @@ export const issueAuthentication = (payload) => {
     expires_in: EXPIRATION,
     access_token: sign(payload),
   };
-};
-
-/**
- * Ensures that the given authorization header contains a valid
- * access token
- *
- * And populates the request object with `req.user` if there is any valid session
- * @param {import('express').Request} req
- * @param {import('express').Response} res
- * @param {import('express').NextFunction} next
- */
-export const ensureAuthenticated = (req, res, next) => {
-  const authorization = req.header("authorization");
-
-  if (!authorization) {
-    next(new UnauthenticatedError());
-  }
-
-  const [token_type, access_token] = authorization.split(" ");
-
-  if (token_type !== "Bearer") {
-    next(new UnauthorizedError());
-    return;
-  }
-
-  let payload;
-
-  try {
-    payload = jwt.verify(access_token, SECRET);
-  } catch (err) {
-    next(new UnauthorizedError());
-    return;
-  }
-
-  // TODO: validate user role for advanced permissions
-  req.user = payload;
-
-  next();
 };

@@ -1,7 +1,7 @@
 import Express from "express";
 
 import Tournament, { statuses } from "../providers/database/tournament";
-import { ensureAuthenticated } from "../services/oauth/authentication";
+import ensureAuthenticated from "../middlewares/ensureAuthenticated";
 
 const router = Express.Router();
 

@@ -1,7 +1,7 @@
 import Express from "express";
 
 import Pool from "../providers/database/pool";
-import { ensureAuthenticated } from "../services/oauth/authentication";
+import ensureAuthenticated from "../middlewares/ensureAuthenticated";
 
 const router = Express.Router();
 
