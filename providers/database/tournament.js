@@ -1,12 +1,14 @@
 import mongoose from "mongoose";
 import mongoose_fuzzy_searching from "mongoose-fuzzy-searching";
+import { ValidationError } from "../../utils/errors";
+import _ from "lodash";
 
 import Pool from "./pool";
 
 export const statuses = {
-  active: "active",
-  inactive: "inactive",
-  legacy: "legacy",
+  active: "active", // Tournaments that are being organized
+  inactive: "inactive", // Tournaments that have ended
+  legacy: "legacy", // Tornaments that have been added on a batch operation
 };
 
 const TournamentSchema = new mongoose.Schema(
@@ -28,24 +30,16 @@ const TournamentSchema = new mongoose.Schema(
     },
     pools: {
       type: [{ type: mongoose.Types.ObjectId, ref: "Pool" }],
-      minlength: 1,
       validate: [
+        {
+          validator: (pools) => Array.isArray(pools),
+          message: "must be an array",
+        },
         {
           validator: function (value) {
             return Array.isArray(value) && value.length >= 1;
           },
           message: "needs at least 1 entry",
-        },
-        {
-          validator: async function (pools) {
-            const docs = await Pool.find({
-              _id: {
-                $in: [...pools],
-              },
-            });
-            return pools.length === docs.length;
-          },
-          message: "one or more do(es) not exist",
         },
       ],
     },
@@ -55,20 +49,62 @@ const TournamentSchema = new mongoose.Schema(
   }
 );
 
-//#region  Middlewares
-TournamentSchema.post("save", async function (tournament) {
-  if (tournament.isModified("pools")) {
-    await Pool.updateMany(
-      {
-        _id: {
-          $in: [...tournament.pools],
-        },
-      },
-      {
-        $pull: { used_in: tournament._id },
-      }
+TournamentSchema.pre("save", async function () {
+  // Validate on new entries that any pool that is being added / updated does exist
+  if (this.isNew && !(await Pool.exists({ _id: { $in: [...this.pools] } }))) {
+    throw new ValidationError(
+      "one or more of the specified pools do not exist"
     );
-    // Update all references
+  }
+
+  // Update pool references for already existing records
+  if (this.isNew === false) {
+    const tournament = await TournamentModel.findById(this._id);
+
+    if (tournament.status !== statuses.active) {
+      throw new ValidationError(
+        "tournaments that are not active cannot be modified"
+      );
+    }
+
+    if (this.isModified("pools")) {
+      const addedPools = _.difference(this.pools, tournament.pools);
+      const removedPools = _.difference(tournament.pools, this.pools);
+
+      // Remove reference to pools that are being removed
+      if (removedPools.length >= 1) {
+        await Pool.updateMany(
+          {
+            _id: {
+              $in: [...removedPools],
+            },
+          },
+          {
+            $pull: { used_in: tournament._id },
+          }
+        );
+      }
+
+      // Add new references to existing pools
+      if (addedPools.length >= 1) {
+        await Pool.updateMany(
+          {
+            _id: {
+              $in: [...addedPools],
+            },
+          },
+          {
+            $push: { used_in: tournament._id },
+          }
+        );
+      }
+    }
+  }
+});
+
+TournamentSchema.post("save", async function (tournament) {
+  // Add pool references after saving
+  if (tournament.isNew === true) {
     await Pool.updateMany(
       {
         _id: {
@@ -82,21 +118,6 @@ TournamentSchema.post("save", async function (tournament) {
   }
 });
 
-TournamentSchema.post("remove", async function (tournament) {
-  // Remove tournament reference from pools
-  await Pool.updateMany(
-    {
-      _id: {
-        $in: [...tournament.pools],
-      },
-    },
-    {
-      $pull: { used_in: tournament._id },
-    }
-  );
-});
-//#endregion
-
 TournamentSchema.plugin(mongoose_fuzzy_searching, {
   fields: [
     {
@@ -109,4 +130,6 @@ TournamentSchema.plugin(mongoose_fuzzy_searching, {
   ],
 });
 
-export default mongoose.model("Tournament", TournamentSchema);
+const TournamentModel = mongoose.model("Tournament", TournamentSchema);
+
+export default TournamentModel;
