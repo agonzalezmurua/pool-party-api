@@ -1,11 +1,15 @@
 import Express from "express";
-import errorHandlerMiddleware from "../middlewares/errorHandler";
 
 import beatmapsets from "../routes/beatmapsets";
 import pools from "../routes/pools";
 import tournaments from "../routes/tournaments";
 import users from "../routes/users";
+import errorHandler from "../middlewares/errorHandler";
 
+/**
+ * Configures api routes
+ * @param {import('express').Application} app
+ */
 export async function configure(app) {
   const router = Express.Router();
 
@@ -14,7 +18,7 @@ export async function configure(app) {
   router.use("/tournaments", tournaments);
   router.use("/users", users);
 
-  router.use(errorHandlerMiddleware);
+  router.use(errorHandler);
 
   app.use(router);
 }

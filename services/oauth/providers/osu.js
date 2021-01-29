@@ -1,14 +1,12 @@
 import axios from "axios";
 import consola from "consola";
-import colors from "colors/safe";
 import config from "config";
 import { encode } from "querystring";
 
+import prefixes from "../../../constants/consola_prefixes";
 import User from "../../../providers/database/user";
 
 import { issueAuthentication } from "../authentication";
-
-const prefix = `${colors.magenta("[OSU]")}${colors.cyan("[OAUTH]")}`;
 
 const redirect_uri = config.get("web.url") + config.get("web.osu_callback");
 
@@ -55,12 +53,15 @@ export async function handleAuthentication(req, res) {
   };
 
   try {
-    consola.debug(prefix, "sending oauth code to api");
+    consola.debug(prefixes.oauth_osu, "sending oauth code to api");
     const {
       data: { token_type, access_token },
     } = await client.post("/oauth/token", encode(payload));
 
-    consola.debug(prefix, "adding interceptor for further requests");
+    consola.debug(
+      prefixes.oauth_osu,
+      "adding interceptor for further requests"
+    );
     // Add interceptor for further requests
     client.interceptors.request.use((config) => {
       config.headers = {
@@ -69,27 +70,27 @@ export async function handleAuthentication(req, res) {
       return config;
     });
 
-    consola.debug(prefix, "obtaining user information");
+    consola.debug(prefixes.oauth_osu, "obtaining user information");
     const {
       data: { id, username },
     } = await client.get(`${PATH}/me`);
 
     // Revoke current token to prevent further accidental usage
-    consola.debug(prefix, "revoking osu token");
+    consola.debug(prefixes.oauth_osu, "revoking osu token");
     await client.delete(`${PATH}/oauth/tokens/current`);
 
-    consola.debug(prefix, "retrieving user from database");
+    consola.debug(prefixes.oauth_osu, "retrieving user from database");
     let user = await User.findOne({ osu_id: id });
 
     if (!user) {
-      consola.debug(prefix, "user does not exist, creating");
+      consola.debug(prefixes.oauth_osu, "user does not exist, creating");
       user = new User({ osu_id: id, username: username });
       await user.save();
     } else {
-      consola.debug(prefix, "user exists");
+      consola.debug(prefixes.oauth_osu, "user exists");
     }
 
-    consola.debug(prefix, "issuing authentication token");
+    consola.debug(prefixes.oauth_osu, "issuing authentication token");
     res.json(
       issueAuthentication({
         id: user.id,

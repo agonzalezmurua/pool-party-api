@@ -1,11 +1,11 @@
 import Express from "express";
-import * as Db from "../providers/database";
+import User from "../providers/database/user";
 
 const router = Express.Router();
 
 router.get("/", async (req, res) => {
   const { search } = req.query;
-  const users = await Db.User.fuzzySearch(search).select(["-confidenceScore"]);
+  const users = await User.fuzzySearch(search).select(["-confidenceScore"]);
   res.json(users);
 });
 

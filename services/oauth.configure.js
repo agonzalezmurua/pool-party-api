@@ -1,11 +1,8 @@
 import Express from "express";
-import colors from "colors/safe";
 import {
   requestAuthorization as osuAuthorization,
   handleAuthentication as osuAuthentication,
 } from "./oauth/providers/osu";
-
-export const prefix = colors.cyan("[OAUTH]");
 
 /**
  * Configures a router with 'oauth' prefix that handles

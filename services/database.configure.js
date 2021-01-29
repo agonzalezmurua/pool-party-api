@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import colors from "colors/safe";
 import config from "config";
 
-const prefix = colors.green(`[DBM]`);
+import prefixes from "../constants/consola_prefixes";
 
 /**
  * Creates initial configuration and connects to the database
@@ -15,11 +15,11 @@ export async function configure() {
   )}/${config.get("database.name")}`;
   try {
     consola.debug(
-      prefix,
+      prefixes.database,
       "Using string connection",
       colors.yellow(connectionUri)
     );
-    consola.debug(prefix, "Attempting to connect to database");
+    consola.debug(prefixes.database, "Attempting to connect to database");
 
     await mongoose.connect(connectionUri, {
       useNewUrlParser: true,
@@ -28,9 +28,9 @@ export async function configure() {
       useCreateIndex: true,
     });
 
-    consola.success(prefix, "Database has connected");
+    consola.success(prefixes.database, "Database has connected");
   } catch (error) {
-    consola.error(prefix, "Database failed to connect", error);
+    consola.error(prefixes.database, "Database failed to connect", error);
     throw error;
   }
 }

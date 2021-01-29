@@ -26,7 +26,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "start": "cross-env CONSOLA_LEVEL=7 nodemon --inspect -r dotenv/config -r esm app.js",
+    "start": "nodemon --inspect -r dotenv/config -r esm app.js",
     "cli": "cross-env CONSOLA_LEVEL=4 node --inspect -r dotenv/config -r esm utils/cli.js",
     "prod": "node index.js"
   },

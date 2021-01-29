@@ -3,6 +3,11 @@ import colors from "colors/safe";
 const prefixes = {
   osu: colors.magenta("[OSU]"),
   app: colors.cyan(`[APP]`),
+  database: colors.green(`[DBM]`),
+  oauth: colors.cyan("[OAUTH]"),
+  get oauth_osu() {
+    return `${this.oauth} ${this.osu}`;
+  },
 };
 
 export default prefixes;

@@ -38,7 +38,7 @@ const TournamentSchema = new mongoose.Schema(
         },
         {
           validator: async function (pools) {
-            const docs = await Db.Pools.find({
+            const docs = await Pool.find({
               _id: {
                 $in: [...pools],
               },

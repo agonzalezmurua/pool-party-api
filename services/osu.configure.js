@@ -4,9 +4,6 @@ import consola from "consola";
 import config from "config";
 
 import prefixes from "../constants/consola_prefixes";
-
-export const CLIENT_SECRET = process.env.OSU_API_SECRET;
-
 import configureToken from "./osu/token";
 
 export const client = axios.create({
@@ -24,6 +21,9 @@ client.interceptors.response.use(
   }
 );
 
+/**
+ * Configures osu's token managment and interceptors
+ */
 export async function configure() {
   await configureToken();
 }
