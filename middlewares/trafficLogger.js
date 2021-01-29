@@ -8,7 +8,7 @@ import prefixes from "../constants/consola_prefixes";
  * @param {import('express').Response} res
  * @param {import('express').NextFunction} next
  */
-export default function (req, res, next) {
+export default function trafficLogger(req, res, next) {
   res.on("finish", function () {
     let method = req.method;
     const path = req.originalUrl;
