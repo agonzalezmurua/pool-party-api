@@ -1,5 +1,8 @@
 import colors from "colors/safe";
 
+/**
+ * Prefix labels to ad more clarity to consola outputs
+ */
 const prefixes = {
   osu: colors.magenta("[OSU]"),
   app: colors.cyan(`[APP]`),

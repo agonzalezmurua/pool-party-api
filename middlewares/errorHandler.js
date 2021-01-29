@@ -1,6 +1,8 @@
 import consola from "consola";
 
 /**
+ * Generic error handler for every appended request
+ *
  * @param {Error} err
  * @param {import('express').Request} req
  * @param {import('express').Response} res

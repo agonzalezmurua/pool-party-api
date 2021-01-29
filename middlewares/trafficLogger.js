@@ -2,7 +2,7 @@ import consola from "consola";
 import colors from "colors/safe";
 
 /**
- * Logger that tracks every request
+ * Logger that tracks every response sent by express
  * @param {import('express').Request} req
  * @param {import('express').Response} res
  * @param {import('express').NextFunction} next
