@@ -1,5 +1,6 @@
 import consola from "consola";
 import colors from "colors/safe";
+import prefixes from "../constants/consola_prefixes";
 
 /**
  * Logger that tracks every response sent by express
@@ -9,11 +10,36 @@ import colors from "colors/safe";
  */
 export default function (req, res, next) {
   res.on("finish", function () {
-    const method = colors.cyan(req.method.padEnd(6));
-    const protocol = colors.yellow(req.protocol);
+    let method = req.method;
     const path = req.originalUrl;
     const code = colors.yellow(this.statusCode);
-    consola.info(`${method} ${protocol} ${code} - ${path}`);
+    const protocol = colors.grey(req.protocol);
+
+    switch (method) {
+      case "GET":
+        method = colors.green(method);
+        break;
+      case "PUT":
+      case "PATCH":
+        method = colors.yellow(method);
+        break;
+      case "DELETE":
+        method = colors.red(method);
+        break;
+      case "POST":
+        method = colors.magenta(method);
+        break;
+      default:
+        method = colors.grey(method);
+        break;
+    }
+    let args = [prefixes.app, method, protocol, code, "-", path];
+    if (req.method !== "GET") {
+      args.push(colors.grey("\n request body:"));
+      args.push(req.body);
+    }
+
+    consola.info(...args);
   });
   next();
 }
