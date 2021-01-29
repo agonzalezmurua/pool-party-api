@@ -34,12 +34,12 @@ export default function trafficLogger(req, res, next) {
         break;
     }
     let args = [prefixes.app, method, protocol, code, "-", path];
-    if (req.method !== "GET") {
-      args.push(colors.grey("\n request body:"));
-      args.push(req.body);
-    }
 
     consola.info(...args);
+
+    if (req.method !== "GET") {
+      consola.debug(colors.grey("\n request body:"), req.body);
+    }
   });
   next();
 }
