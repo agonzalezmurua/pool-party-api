@@ -1,16 +1,16 @@
 import axios from "axios";
 import consola from "consola";
 import colors from "colors/safe";
+import config from "config";
 import { encode } from "querystring";
 
 import User from "../../../providers/database/user";
 
-import { BASE_URL, PATH, CLIENT_ID, CLIENT_SECRET } from "../../osu.configure";
 import { issueAuthentication } from "../authentication";
 
 const prefix = `${colors.magenta("[OSU]")}${colors.cyan("[OAUTH]")}`;
 
-const redirect_uri = process.env.APP_URL + process.env.OSU_OAUTH_CALLBACK_URI;
+const redirect_uri = config.get("web.url") + config.get("web.osu_callback");
 
 /**
  * Redirects
@@ -19,14 +19,14 @@ const redirect_uri = process.env.APP_URL + process.env.OSU_OAUTH_CALLBACK_URI;
  */
 export function requestAuthorization(req, res) {
   const parameters = {
-    client_id: CLIENT_ID, // The Client ID you received when you registered
+    client_id: config("osu.api.client_id"), // The Client ID you received when you registered
     redirect_uri: redirect_uri, // The URL in your application where users will be sent after authorization. This must match the registered Application Callback URL exactly.
     response_type: "code", // This should always be code when requesting authorization.
     scope: ["identify"].join(" "), // A space-delimited string of scopes.
   };
 
   const path = "/oauth/authorize";
-  const url = new URL(path, BASE_URL);
+  const url = new URL(path, config("osu.base_url"));
 
   Object.entries(parameters).forEach(([name, value]) => {
     url.searchParams.append(name, value);
@@ -47,9 +47,9 @@ export async function handleAuthentication(req, res) {
   });
   const { code } = req.body;
   const payload = {
-    client_id: CLIENT_ID, // The client ID of your application.
-    client_secret: CLIENT_SECRET, //	The client secret of your application.
     code: code, //The code you received.
+    client_id: config("osu.api.client_id"), // The client ID of your application.
+    client_secret: process.env.OSU_API_SECRET, //	The client secret of your application.
     grant_type: "authorization_code", //	This must always be authorization_code
     redirect_uri: redirect_uri, //	The URL in your application where users will be sent after authorization.
   };

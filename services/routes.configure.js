@@ -1,10 +1,10 @@
 import Express from "express";
 import errorHandlerMiddleware from "../middlewares/errorHandler";
 
-import beatmapsets from "./beatmapsets";
-import pools from "./pools";
-import tournaments from "./tournaments";
-import users from "./users";
+import beatmapsets from "../routes/beatmapsets";
+import pools from "../routes/pools";
+import tournaments from "../routes/tournaments";
+import users from "../routes/users";
 
 export async function configure(app) {
   const router = Express.Router();

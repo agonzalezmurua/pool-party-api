@@ -1,15 +1,16 @@
 import axios from "axios";
 import colors from "colors/safe";
 import consola from "consola";
+import config from "config";
 
-export const CLIENT_ID = process.env.OSU_API_CLIENT_ID;
+import prefixes from "../constants/consola_prefixes";
+
 export const CLIENT_SECRET = process.env.OSU_API_SECRET;
-export const PATH = "/api/v2";
-export const prefix = colors.magenta(`[OSU]`);
-export const BASE_URL = "https://osu.ppy.sh";
+
+import configureToken from "./osu/token";
 
 export const client = axios.create({
-  baseURL: BASE_URL,
+  baseURL: config.get("osu.base_url"),
 });
 
 client.interceptors.response.use(
@@ -18,7 +19,11 @@ client.interceptors.response.use(
     const method = colors.white.bold(error.request.method);
     const path = colors.white(error.request.path);
     const status = colors.white.bold(error.response.status);
-    consola.debug(prefix, `${method} ${status} - ${path}:`, error);
+    consola.debug(prefixes.osu, `${method} ${status} - ${path}:`, error);
     Promise.reject(error);
   }
 );
+
+export async function configure() {
+  await configureToken();
+}

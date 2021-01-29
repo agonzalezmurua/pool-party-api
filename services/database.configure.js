@@ -1,6 +1,7 @@
 import consola from "consola";
 import mongoose from "mongoose";
 import colors from "colors/safe";
+import config from "config";
 
 const prefix = colors.green(`[DBM]`);
 
@@ -9,7 +10,9 @@ const prefix = colors.green(`[DBM]`);
  * @returns {Promise<void>}
  */
 export async function configure() {
-  const connectionUri = `mongodb://${process.env.MONGO_CONNECTION_DOMAIN}/${process.env.MONGO_DATABASE_NAME}`;
+  const connectionUri = `mongodb://${config.get(
+    "database.domain"
+  )}/${config.get("database.name")}`;
   try {
     consola.debug(
       prefix,
