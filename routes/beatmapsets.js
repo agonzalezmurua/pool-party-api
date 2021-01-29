@@ -19,6 +19,7 @@ function MapBeatmapsetToDocument(set) {
     status: set.status,
     covers: set.covers,
     tags: set.tags.split(" "),
+    submitted_date: set.submitted_date,
     beatmaps: set.beatmaps.map((beatmap) => ({
       difficulty_rating: beatmap.difficulty_rating,
       id: beatmap.id,
@@ -40,10 +41,32 @@ function MapBeatmapsetToDocument(set) {
 }
 
 router.get("/", async (req, res) => {
-  const { search = "" } = req.query;
+  const {
+    search = "",
+    status = "ranked",
+    diff_min = 0,
+    diff_max = 10,
+    dur_min = 0,
+    submitted_date = "2007-08-16T00:00:00.000Z",
+    dur_max = 3600,
+  } = req.query;
 
-  const beatmapsets = await Beatmapset.fuzzySearch(search)
-    .sort({ created_at: -1, created_at: -1 })
+  const beatmapsets = await Beatmapset.find({
+    status: status,
+    "beatmaps.difficulty_rating": {
+      $gte: Number(diff_min),
+      $lte: Number(diff_max),
+    },
+    "beatmaps.total_length": {
+      $gte: Number(dur_min),
+      $lte: Number(dur_max),
+    },
+    submitted_date: {
+      $gte: new Date(submitted_date),
+    },
+  })
+    .fuzzySearch(search)
+    .sort({ confidenceScore: -1 })
     .select("-confidenceScore")
     .limit(50)
     .exec();

@@ -73,6 +73,7 @@ const BeatmapsetSchema = new mongoose.Schema(
         url: String,
       },
     ],
+    submitted_date: Date,
     tags: {
       type: [String],
     },
