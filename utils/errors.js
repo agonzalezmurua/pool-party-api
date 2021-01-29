@@ -13,3 +13,11 @@ export class UnauthorizedError extends Error {
     this.message = "Failed to idenfity user's identity";
   }
 }
+
+export class ValidationError extends Error {
+  constructor(message) {
+    super();
+    this.name = "ValidationError";
+    this.message = message;
+  }
+}
