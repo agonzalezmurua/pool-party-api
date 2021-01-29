@@ -5,8 +5,14 @@ import ensureAuthenticated from "../middlewares/ensureAuthenticated";
 
 const router = Express.Router();
 
-router.get("/", (req, res) => {
-  res.status(501).json(null);
+router.get("/", async (req, res) => {
+  const { search = "" } = req;
+
+  const pools = await Pool.fuzzySearch(search)
+    .sort({ created_at: -1 })
+    .select("-confidenceScore");
+
+  res.json(pools);
 });
 
 router.get("/latest", async (req, res) => {
