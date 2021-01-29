@@ -81,7 +81,6 @@ const BeatmapsetSchema = new mongoose.Schema(
     timestamps: { createdAt: "created_at", updatedAt: "updated_at" },
   }
 );
-
 BeatmapsetSchema.plugin(mongoose_fuzzy_searching, {
   fields: [
     {
@@ -104,4 +103,6 @@ BeatmapsetSchema.plugin(mongoose_fuzzy_searching, {
   ],
 });
 
-export default mongoose.model("Beatmapsets", BeatmapsetSchema);
+const BeatmapModel = mongoose.model("Beatmapset", BeatmapsetSchema);
+
+export default BeatmapModel;

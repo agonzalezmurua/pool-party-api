@@ -1,5 +1,8 @@
 import mongoose from "mongoose";
 import mongoose_fuzzy_searching from "mongoose-fuzzy-searching";
+import { ValidationError } from "../../utils/errors";
+
+import Beatmapset from "./beatmapset";
 
 export const statuses = {
   draft: "draft",
@@ -36,6 +39,16 @@ const PoolSchema = new mongoose.Schema(
   }
 );
 
+PoolSchema.pre("save", async function () {
+  if (
+    (this.isNew || this.isModified("beatmaps")) &&
+    this.beatmapsets.length >= 1 &&
+    !(await Beatmapset.exists({ _id: { $in: [...this.beatmapsets] } }))
+  ) {
+    throw new ValidationError("Some beatmaps do not exist");
+  }
+});
+
 PoolSchema.plugin(mongoose_fuzzy_searching, {
   fields: [
     {
@@ -49,4 +62,6 @@ PoolSchema.plugin(mongoose_fuzzy_searching, {
   ],
 });
 
-export default mongoose.model("Pool", PoolSchema);
+const PoolModel = mongoose.model("Pool", PoolSchema);
+
+export default PoolModel;

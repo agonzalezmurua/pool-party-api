@@ -11,6 +11,7 @@ const UserSchema = new mongoose.Schema(
   {
     osu_id: { type: String, required: true },
     username: { type: String, required: true },
+    active: { type: Boolean, default: true },
     role: {
       type: String,
       enum: [roles.admin, roles.moderator, roles.user],
@@ -31,4 +32,6 @@ UserSchema.plugin(mongoose_fuzzy_searching, {
   ],
 });
 
-export default mongoose.model("User", UserSchema);
+const UserModel = mongoose.model("User", UserSchema);
+
+export default UserModel;
