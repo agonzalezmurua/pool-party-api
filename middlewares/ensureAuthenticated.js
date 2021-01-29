@@ -10,7 +10,7 @@ import { UnauthenticatedError, UnauthorizedError } from "../utils/errors";
  * @param {import('express').Response} res
  * @param {import('express').NextFunction} next
  */
-export default function ensureAuthenticated(req, res) {
+export default function ensureAuthenticated(req, res, next) {
   const authorization = req.header("authorization");
 
   if (!authorization) {
@@ -23,16 +23,12 @@ export default function ensureAuthenticated(req, res) {
     throw new UnauthenticatedError();
   }
 
-  let payload;
-
   try {
-    payload = verifyJwt(access_token);
+    const payload = verifyJwt(access_token);
+    req.user = payload;
   } catch (err) {
     throw new UnauthorizedError();
   }
-
-  // TODO: validate user role for advanced permissions
-  req.user = payload;
 
   next();
 }
