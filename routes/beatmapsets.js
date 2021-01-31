@@ -84,6 +84,18 @@ router.get("/latest", async (req, res) => {
   res.send(beatmaps);
 });
 
+router.get("/preview", async (req, res) => {
+  const { beatmapID } = req.query;
+  const beatmapsets = await Osu.beatmapset.findById(beatmapID);
+  if (!beatmapsets) {
+    res.status(404);
+    res.send(null);
+    return;
+  }
+  const formattedmap = MapBeatmapsetToDocument(beatmapsets)
+  res.json(formattedmap);
+});
+
 router.get("/:id", async (req, res) => {
   const document = await Beatmapset.findById(req.params.id).exec();
 
@@ -105,9 +117,9 @@ router.post("/", ensureAuthenticated, async (req, res) => {
     res.status(409);
     throw new Error("APP.MAP.ALREADY.EXIST");
   }
-
+  
   const set = await Osu.beatmapset.findById(osu_id);
-
+  console.log(set)
   if (!set) {
     res.status(400);
     throw new Error("OSU.MAP.DOES.NOT.EXIST");
