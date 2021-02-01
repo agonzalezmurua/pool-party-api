@@ -12,6 +12,7 @@ const UserSchema = new mongoose.Schema(
     osu_id: { type: String, required: true },
     username: { type: String, required: true },
     active: { type: Boolean, default: true },
+    avatar_url: { type: String, required: true },
     role: {
       type: String,
       enum: [roles.admin, roles.moderator, roles.user],
@@ -20,7 +21,7 @@ const UserSchema = new mongoose.Schema(
     },
   },
   {
-    timestamps: { createdAt: "created_at" },
+    timestamps: { createdAt: "created_at", updatedAt: "updated_at" },
   }
 );
 

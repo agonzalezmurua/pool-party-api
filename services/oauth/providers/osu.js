@@ -72,7 +72,7 @@ export async function handleAuthentication(req, res) {
 
     consola.debug(prefixes.oauth_osu, "obtaining user information");
     const {
-      data: { id, username },
+      data: { id, username, avatar_url },
     } = await client.get(`${config.get("osu.api.path")}/me`);
 
     // Revoke current token to prevent further accidental usage
@@ -84,11 +84,11 @@ export async function handleAuthentication(req, res) {
 
     if (!user) {
       consola.debug(prefixes.oauth_osu, "user does not exist, creating");
-      user = new User({ osu_id: id, username: username });
-      await user.save();
-    } else {
-      consola.debug(prefixes.oauth_osu, "user exists");
+      user = new User();
     }
+
+    user = Object.assign(user, { username, avatar_url, osu_id: id });
+    await user.save();
 
     consola.debug(prefixes.oauth_osu, "issuing authentication token");
     res.json(
