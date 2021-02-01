@@ -93,8 +93,10 @@ export async function handleAuthentication(req, res) {
     consola.debug(prefixes.oauth_osu, "issuing authentication token");
     res.json(
       issueAuthentication({
-        id: user.id,
+        _id: user._id,
         osu_id: user.osu_id,
+        avatar_url: user.avatar_url,
+        username: user.username,
       })
     );
   } catch (error) {
