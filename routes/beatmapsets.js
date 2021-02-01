@@ -119,7 +119,6 @@ router.post("/", ensureAuthenticated, async (req, res) => {
   }
   
   const set = await Osu.beatmapset.findById(osu_id);
-  console.log(set)
   if (!set) {
     res.status(400);
     throw new Error("OSU.MAP.DOES.NOT.EXIST");
