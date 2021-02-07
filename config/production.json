@@ -17,7 +17,7 @@
     }
   },
   "database": {
-    "connection_string": "mongodb+srv://{env.username}:#{env.password}@cluster0.fozgk.mongodb.net/{config.name}?retryWrites=true&w=majority",
+    "connection_string": "mongodb+srv://{env.username}:{env.password}@cluster0.fozgk.mongodb.net/{config.name}?retryWrites=true&w=majority",
     "name": "pool-party"
   }
 }
