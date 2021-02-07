@@ -30,7 +30,8 @@
     "@types/lodash": "^4.14.168"
   },
   "scripts": {
-    "start": "nodemon --inspect -r dotenv/config -r esm app.js",
+    "start": "node -r dotenv/config -r esm app.js",
+    "dev": "nodemon --inspect -r dotenv/config -r esm app.js",
     "cli": "cross-env CONSOLA_LEVEL=4 node --inspect -r dotenv/config -r esm utils/cli.js",
     "prod": "node index.js"
   },
