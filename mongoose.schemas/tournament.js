@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import mongoose_fuzzy_searching from "mongoose-fuzzy-searching";
-import { ValidationError } from "../../utils/errors";
+import { ValidationError } from "../utils/errors";
 import _ from "lodash";
 
 import Pool from "./pool";

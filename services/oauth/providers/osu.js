@@ -4,7 +4,7 @@ import config from "config";
 import { encode } from "querystring";
 
 import prefixes from "../../../constants/consola_prefixes";
-import User from "../../../providers/database/user";
+import User from "../../../mongoose.schemas/user";
 
 import { issueAuthentication } from "../authentication";
 

@@ -1,6 +1,6 @@
 import Express from "express";
 
-import Tournament, { statuses } from "../providers/database/tournament";
+import Tournament, { statuses } from "../mongoose.schemas/tournament";
 import ensureAuthenticated from "../middlewares/ensureAuthenticated";
 
 const router = Express.Router();

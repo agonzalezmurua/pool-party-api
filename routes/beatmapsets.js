@@ -1,6 +1,6 @@
 import express from "express";
 
-import Beatmapset from "../providers/database/beatmapset";
+import Beatmapset from "../mongoose.schemas/beatmapset";
 import Osu from "../providers/osu";
 
 import ensureAuthenticated from "../middlewares/ensureAuthenticated";
@@ -92,7 +92,7 @@ router.get("/preview", async (req, res) => {
     res.send(null);
     return;
   }
-  const formattedmap = MapBeatmapsetToDocument(beatmapsets)
+  const formattedmap = MapBeatmapsetToDocument(beatmapsets);
   res.json(formattedmap);
 });
 
@@ -117,7 +117,7 @@ router.post("/", ensureAuthenticated, async (req, res) => {
     res.status(409);
     throw new Error("APP.MAP.ALREADY.EXIST");
   }
-  
+
   const set = await Osu.beatmapset.findById(osu_id);
   if (!set) {
     res.status(400);

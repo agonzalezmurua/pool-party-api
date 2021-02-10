@@ -1,6 +1,6 @@
 import Express from "express";
 
-import User from "../providers/database/user";
+import User from "../mongoose.schemas/user";
 
 const router = Express.Router();
 

@@ -1,6 +1,6 @@
 import Express from "express";
 
-import Pool from "../providers/database/pool";
+import Pool from "../mongoose.schemas/pool";
 import ensureAuthenticated from "../middlewares/ensureAuthenticated";
 
 const router = Express.Router();
