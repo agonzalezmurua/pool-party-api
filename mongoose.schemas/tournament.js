@@ -46,9 +46,14 @@ const TournamentSchema = new mongoose.Schema(
   },
   {
     timestamps: { createdAt: "created_at", updatedAt: "updated_at" },
+    toJSON: {
+      virtuals: true,
+    },
   }
 );
-
+TournamentSchema.virtual("pool_amount").get(function () {
+  return this.pools.length;
+});
 TournamentSchema.pre("save", async function () {
   // Validate on new entries that any pool that is being added / updated does exist
   if (this.isNew && !(await Pool.exists({ _id: { $in: [...this.pools] } }))) {

@@ -36,9 +36,19 @@ const PoolSchema = new mongoose.Schema(
   },
   {
     timestamps: { createdAt: "created_at", updatedAt: "updated_at" },
+    toJSON: {
+      virtuals: true,
+    },
   }
 );
-
+PoolSchema.virtual("beatmap_amount").get(function () {
+  if (this.beatmapsets) {
+    return this.beatmapsets.length;
+  }
+  else{
+    return 0;
+  }
+});
 PoolSchema.pre("save", async function () {
   if (
     (this.isNew || this.isModified("beatmaps")) &&

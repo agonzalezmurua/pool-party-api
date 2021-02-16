@@ -21,7 +21,7 @@ router.get("/", async (req, res) => {
 router.get("/latest", async (req, res) => {
   const pools = await Pool.find()
     .sort({ created_at: -1 })
-    .populate(["created_by", { path: "pools", select: "_id name" }])
+    .populate(["created_by", { path: "beatmapsets", select: "covers.cover" }])
     .limit(50)
     .exec();
 

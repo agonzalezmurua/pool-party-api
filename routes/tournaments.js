@@ -24,7 +24,7 @@ router.get("/", async (req, res) => {
 router.get("/latest", async (req, res) => {
   const tournaments = await Tournament.find()
     .sort({ created_at: -1 })
-    .populate(["created_by", { path: "pools", select: "_id name" }])
+    .populate(["created_by", { path: "pools", select: "_id name beatmapsets" }])
     .limit(50)
     .exec();
 
@@ -48,6 +48,13 @@ router.post("/", ensureAuthenticated, async (req, res) => {
   await document.save({ validateBeforeSave: true });
 
   res.json(document);
+});
+
+router.get("/:id", async (req, res) => {
+  const tournaments = await Tournament.findById(req.params.id)
+    .exec();
+    console.log(tournaments.toJSON())
+  res.send(tournaments);
 });
 
 router.patch("/:id", ensureAuthenticated, async (req, res) => {

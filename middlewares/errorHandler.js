@@ -35,7 +35,6 @@ export default function errorHandler(err, req, res, next) {
   }
 
   consola.error(error);
-
   res.json({
     error: error,
   });
