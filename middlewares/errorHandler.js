@@ -35,6 +35,10 @@ export default function errorHandler(err, req, res, next) {
   }
 
   consola.error(error);
+  if (process.env.CONSOLA_LEVEL == 5) {
+    // Using classic console because consola doesn't like stack traces I think
+    console.trace(error);
+  }
   res.json({
     error: error,
   });

@@ -31,7 +31,7 @@ router.get("/latest", async (req, res) => {
 router.get("/mine", ensureAuthenticated, async (req, res) => {
   const pools = await Pool.find({ created_by: req.user.id })
     .populate([
-      { path: "beatmapsets", select: "title artist creator _id" },
+      { path: "beatmapsets" },
       { path: "used_in", select: "_id name" },
     ])
     .select("-created_by")

@@ -87,10 +87,10 @@ const BeatmapsetSchema = new mongoose.Schema(
 );
 
 BeatmapsetSchema.virtual("song_length").get(function () {
-  console.log(this.beatmaps[0].total_length)
-  const minutes = Math.floor(this.beatmaps[0].total_length / 60);
-  const seconds = this.beatmaps[0].total_length % 60;
-  return `${minutes}:${seconds}`;
+  const [first] = this.beatmaps || [];
+  const minutes = Math.floor((first ? first.total_length : 0) / 60);
+  const seconds = (first ? first.total_length : 0) % 60;
+  return `${minutes}:${String(seconds).padStart(2, "0")}`; // 7:03
 });
 
 BeatmapsetSchema.plugin(mongoose_fuzzy_searching, {
