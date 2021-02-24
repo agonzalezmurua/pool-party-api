@@ -97,14 +97,14 @@ router.get("/preview", async (req, res) => {
 });
 
 router.get("/:id", async (req, res) => {
-  const document = await Beatmapset.findById(req.params.id).exec();
-
+  const document = await Beatmapset.findById(req.params.id)
+    .populate({ path: "used_in", select: "name _id" })
+    .exec();
   if (!document) {
     res.status(404);
     res.send(document);
     return;
   }
-
   res.json(document);
 });
 

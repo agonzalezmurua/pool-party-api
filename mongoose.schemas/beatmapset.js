@@ -77,6 +77,14 @@ const BeatmapsetSchema = new mongoose.Schema(
     tags: {
       type: [String],
     },
+    used_in: {
+      type: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Pool",
+        },
+      ],
+    },
   },
   {
     timestamps: { createdAt: "created_at", updatedAt: "updated_at" },
