@@ -34,7 +34,6 @@ router.get("/mine", ensureAuthenticated, async (req, res) => {
       { path: "beatmapsets" },
       { path: "used_in", select: "_id name" },
     ])
-    .select("-created_by")
     .exec();
 
   res.json(pools);
@@ -48,6 +47,19 @@ router.post("/", ensureAuthenticated, async (req, res, next) => {
 
   res.json(document);
 });
+
+router.get("/:id", ensureAuthenticated, async(req, res) => {
+  const document = await Pool.findById(req.params.id)
+  .populate({path: "beatmapsets", select:"_id covers.cover status is_tournament title artist user_id creator"})
+  .exec();
+  if (!document){
+    res.status(404);
+    res.send(document);
+    return;
+  }
+  res.json(document);
+});
+
 
 router.patch("/:id", ensureAuthenticated, async (req, res) => {
   const { name, beatmapsets } = req.body;
