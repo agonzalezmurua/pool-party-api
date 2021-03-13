@@ -24,7 +24,26 @@ const PoolSchema = new mongoose.Schema(
       required: true,
     },
     beatmapsets: {
-      type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Beatmapset" }],
+      type: [
+        {
+          reference: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Beatmapset",
+            required: true,
+          },
+          modifiers: {
+            type: [String],
+            default: () => ["no_mod"]
+          },
+          difficulty: {
+            type: String,
+            required: true,
+            default: function() {
+              return "unknown"
+            }
+          },
+        },
+      ],
     },
     used_in: {
       type: [
@@ -45,8 +64,7 @@ const PoolSchema = new mongoose.Schema(
 PoolSchema.virtual("beatmap_amount").get(function () {
   if (this.beatmapsets) {
     return this.beatmapsets.length;
-  }
-  else{
+  } else {
     return 0;
   }
 });
@@ -61,7 +79,6 @@ PoolSchema.pre("save", async function () {
 });
 
 PoolSchema.pre("save", async function () {
-
   // Update beatmapsets references for already existing records
   if (this.isNew === false) {
     const pool = await PoolModel.findById(this._id);

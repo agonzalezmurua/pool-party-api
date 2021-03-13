@@ -21,7 +21,7 @@ router.get("/", async (req, res) => {
 router.get("/latest", async (req, res) => {
   const pools = await Pool.find()
     .sort({ created_at: -1 })
-    .populate(["created_by", { path: "beatmapsets", select: "covers.cover" }])
+    .populate(["created_by", { path: "beatmapsets.reference", select: "covers.cover" }])
     .limit(50)
     .exec();
 
@@ -31,7 +31,7 @@ router.get("/latest", async (req, res) => {
 router.get("/mine", ensureAuthenticated, async (req, res) => {
   const pools = await Pool.find({ created_by: req.user.id })
     .populate([
-      { path: "beatmapsets" },
+      { path: "beatmapsets.reference" },
       { path: "used_in", select: "_id name" },
     ])
     .exec();
@@ -50,7 +50,7 @@ router.post("/", ensureAuthenticated, async (req, res, next) => {
 
 router.get("/:id", ensureAuthenticated, async(req, res) => {
   const document = await Pool.findById(req.params.id)
-  .populate({path: "beatmapsets", select:"_id covers.cover status is_tournament title artist user_id creator"})
+  .populate({path: "beatmapsets.reference", select:"_id covers.cover status is_tournament title artist user_id creator"})
   .exec();
   if (!document){
     res.status(404);
