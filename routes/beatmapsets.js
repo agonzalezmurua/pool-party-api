@@ -77,7 +77,7 @@ router.get("/", async (req, res) => {
 router.get("/latest", async (req, res) => {
   const beatmaps = await Beatmapset.find()
     .sort({ created_at: -1 })
-    .populate({path: "beatmaps", select: "version"})
+    .populate({ path: "beatmaps", select: "version" })
     .limit(50)
     .exec();
 

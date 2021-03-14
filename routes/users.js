@@ -12,4 +12,17 @@ router.get("/", async (req, res) => {
   res.json(users);
 });
 
+router.get("/:id", async (req, res) => {
+  const document = await User.findById(req.params.id)
+  .exec();
+  if (!document) {
+    res.status(404);
+    res.send(document);
+    return
+  }
+  res.json(document);
+})
+
+
+
 export default router;
