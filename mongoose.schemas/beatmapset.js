@@ -101,6 +101,12 @@ BeatmapsetSchema.virtual("song_length").get(function () {
   return `${minutes}:${String(seconds).padStart(2, "0")}`; // 7:03
 });
 
+BeatmapsetSchema.virtual("diff_amount").get(function () {
+  const diffs = this.beatmaps || [];
+  const count = diffs.length;
+  return count;
+});
+
 BeatmapsetSchema.plugin(mongoose_fuzzy_searching, {
   fields: [
     {
