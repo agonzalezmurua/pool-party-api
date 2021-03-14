@@ -10,6 +10,16 @@ export const statuses = {
   public: "public",
 };
 
+export const modifiers = {
+  nomod: "no_mod",
+  hardrock: "hard_rock",
+  hidden: "hidden",
+  doubletime: "double_time",
+  flashlight: "flashlight",
+  freemods: "free_mods",
+  tiebreaker: "tie_breaker",
+};
+
 const PoolSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
@@ -33,7 +43,8 @@ const PoolSchema = new mongoose.Schema(
           },
           modifiers: {
             type: [String],
-            default: () => ["no_mod"]
+            default: () => [modifiers.nomod],
+            enum: [modifiers.nomod, modifiers.hardrock, modifiers.hidden, modifiers.doubletime, modifiers.flashlight, modifiers.freemods, modifiers.tiebreaker]
           },
           difficulty: {
             type: String,
