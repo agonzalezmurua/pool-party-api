@@ -7,7 +7,7 @@ import ensureAuthenticated from "../middlewares/ensureAuthenticated";
 
 const router = express.Router();
 
-function MapBeatmapsetToDocument(set) {
+export function MapBeatmapsetToDocument(set) {
   return {
     osu_id: set.id,
     artist: set.artist,
