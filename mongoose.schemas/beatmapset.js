@@ -156,7 +156,32 @@ BeatmapsetSchema.virtual("song_length").get(function () {
 BeatmapsetSchema.virtual("diff_amount").get(function () {
   const diffs = this.beatmaps || [];
   const count = diffs.length;
-  return count;
+  let countOsu = 0;
+  for (var i = 0; i < diffs.length; i++){
+    if(diffs[i].mode_int == 0){
+      countOsu += 1;
+    }
+  }
+  let countTaiko = 0;
+  for (var i = 0; i < diffs.length; i++){
+    if(diffs[i].mode_int == 1){
+      countTaiko += 1;
+    }
+  }
+  let countCtb = 0;
+  for (var i = 0; i < diffs.length; i++){
+    if(diffs[i].mode_int == 2){
+      countCtb += 1;
+    }
+  }
+  let countMania = 0;
+  for (var i = 0; i < diffs.length; i++){
+    if(diffs[i].mode_int == 3){
+      countMania += 1;
+    }
+  }
+
+  return `${count} (${countOsu} standard, ${countTaiko} taiko, ${countCtb} ctb, ${countMania} mania).`;
 });
 
 BeatmapsetSchema.plugin(mongoose_fuzzy_searching, {
