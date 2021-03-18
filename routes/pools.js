@@ -89,7 +89,7 @@ router.patch("/:id", ensureAuthenticated, async (req, res) => {
 
 router.delete("/:id", ensureAuthenticated, async (req, res, next) => {
   const pool = await Pool.findById(req.params.id);
-
+  console.log(pool)
   if (!pool) {
     res.status(404).json(null);
     return;
@@ -99,15 +99,15 @@ router.delete("/:id", ensureAuthenticated, async (req, res, next) => {
     res.status(403).json(null);
     return;
   }
-
-  if (pool.tournaments.length > 0) {
-    next(
-      new Error(
-        "Cannot delete a pool is being or has been used in a tournament"
-      )
-    );
-    return;
-  }
+  // ++++++ KAZU: Commenting this for now because pool.tournaments literally doesnt exist for some reason ++++++
+  // if (pool.tournaments.length > 0) {
+  //   next(
+  //     new Error(
+  //       "Cannot delete a pool is being or has been used in a tournament"
+  //     )
+  //   );
+  //   return;
+  // }
 
   await pool.delete();
 
