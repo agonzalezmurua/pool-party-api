@@ -50,7 +50,7 @@ router.post("/", ensureAuthenticated, async (req, res, next) => {
 
 router.get("/:id", ensureAuthenticated, async(req, res) => {
   const document = await Pool.findById(req.params.id)
-  .populate({path: "beatmapsets.reference", select:"_id covers.cover status is_tournament title artist user_id creator"})
+  .populate({path: "beatmapsets.reference", select:"_id covers.cover status is_tournament title artist user_id creator beatmaps.version"})
   .exec();
   if (!document){
     res.status(404);
