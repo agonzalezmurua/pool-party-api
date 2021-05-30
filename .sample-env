@@ -1,0 +1,9 @@
+# APP AUTH SECRET
+APP_AUTH_SECRET="DEFAULT_VALUE"
+
+# OSU API SECRET
+OSU_CLIENT_ID=
+OSU_CLIENT_SECRET=
+OSU_AUTH_AUTHORIZATION_URL="https://osu.ppy.sh/oauth/authorize"
+OSU_AUTH_TOKEN_URL="https://osu.ppy.sh/oauth/token"
+OSU_AUTH_CALLBACKURL="http://localhost:3000/#/auth/osu/callback"

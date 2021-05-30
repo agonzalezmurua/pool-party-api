@@ -1,4 +1,4 @@
-import { IUser } from 'src/user/interfaces/user.interface';
+import { IUser } from '@src/modules/user/interfaces/user.interface';
 import { IPool } from './pool.interface';
 import { TournamentStatus } from './tournament.status.enum';
 

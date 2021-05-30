@@ -11,7 +11,7 @@ import { UserProviderKind } from './interfaces/user-provider.kind.enum';
 import { Roles } from './interfaces/user-roles.enum';
 
 @Injectable()
-export class UsersService {
+export class UserService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
@@ -23,7 +23,7 @@ export class UsersService {
     return this.usersRepository.find();
   }
 
-  findOne(id: string): Promise<User> {
+  findOne(id: number): Promise<User> {
     return this.usersRepository.findOne(id);
   }
 

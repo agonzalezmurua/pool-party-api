@@ -1,7 +1,7 @@
 import { IPool } from '../interfaces/pool.interface';
 
-import { Map } from 'src/beatmapset/entities/map.entity';
-import { User } from 'src/user/entities/user.entity';
+import { Map } from '@src/modules/beatmapset/entities/map.entity';
+import { User } from '@src/modules/user/entities/user.entity';
 
 import { PoolStatus } from '../interfaces/pool.status.enum';
 

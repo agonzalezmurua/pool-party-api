@@ -1,16 +1,17 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { CreateUserDTO } from './dto/create-user.dto';
+import { Controller, Get, Param } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 
 import { User } from './entities/user.entity';
 import { UserProviderKind } from './interfaces/user-provider.kind.enum';
-import { UsersService } from './user.service';
+import { UserService } from './user.service';
 
-@Controller('users')
-export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+@ApiTags('user')
+@Controller('user')
+export class UserController {
+  constructor(private readonly usersService: UserService) {}
 
   @Get('/:id')
-  async findOne(@Param('id') id: string): Promise<User> {
+  async findOne(@Param('id') id: number): Promise<User> {
     return await this.usersService.findOne(id);
   }
 

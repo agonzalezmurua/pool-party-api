@@ -1,4 +1,4 @@
-import { Pool } from 'src/event/entities/pool.entity';
+import { Pool } from '@src/modules/event/entities/pool.entity';
 import {
   Column,
   Entity,

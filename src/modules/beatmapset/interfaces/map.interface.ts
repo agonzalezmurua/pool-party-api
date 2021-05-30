@@ -1,5 +1,5 @@
 import { Mode } from 'fs';
-import { IPool } from 'src/event/interfaces/pool.interface';
+import { IPool } from '@src/modules/event/interfaces/pool.interface';
 
 export interface IMap {
   osu_id: string;

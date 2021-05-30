@@ -4,15 +4,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
-import { Map } from './beatmapset/entities/map.entity';
-import { Set } from './beatmapset/entities/set.entity';
-import { User } from './user/entities/user.entity';
-
-import { UsersModule } from './user/user.module';
-import { BeatmapsetModule } from './beatmapset/beatmapset.module';
-import { EventModule } from './event/event.module';
-import { Pool } from './event/entities/pool.entity';
-import { Tournament } from './event/entities/tournament.entity';
+import { UsersModule } from './modules/user/user.module';
+import { BeatmapsetModule } from './modules/beatmapset/beatmapset.module';
+import { EventModule } from './modules/event/event.module';
+import { AuthService } from './modules/auth/auth.service';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -20,8 +16,9 @@ import { Tournament } from './event/entities/tournament.entity';
     UsersModule,
     BeatmapsetModule,
     EventModule,
+    AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, AuthService],
 })
 export class AppModule {}
