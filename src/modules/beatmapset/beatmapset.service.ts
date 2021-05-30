@@ -21,4 +21,10 @@ export class BeatmapsetService {
   findAllMaps(): Promise<Map[]> {
     return this.mapRepository.find();
   }
+
+  findOneSet(id: string): Promise<Set> {
+    return this.setRepository.findOne(id);
+  }
+
+  createOne(payload: CreateSetDTO): Promise<Set> {}
 }

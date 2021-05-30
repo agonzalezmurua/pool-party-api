@@ -1,5 +1,4 @@
 import { IMap } from './map.interface';
-import { Tags } from './tags.enum';
 
 export interface ISet {
   osu_id: string;
