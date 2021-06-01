@@ -1,40 +1,72 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { BeatmapsetService } from './beatmapset.service';
-import { CreateSetDTO } from './dto/create-set.dto';
 
-@ApiTags('beatmap')
-@Controller('beatmap')
+import { BeatmapsetService } from './beatmapset.service';
+
+import { OsuService } from '../osu/osu.service';
+
+@ApiTags('beatmapset')
+@Controller('beatmapset')
 export class BeatmapController {
-  constructor(private readonly beatmapService: BeatmapsetService) {}
+  constructor(
+    private readonly beatmapService: BeatmapsetService,
+    private readonly osuService: OsuService,
+  ) {}
 
   @Get()
-  searchSets() {
+  async searchSets() {
     return this.beatmapService.findAllSets();
   }
 
   @Get('/latest')
-  searchLatestSets() {
+  async searchLatestSets() {
     return this.beatmapService.findAllSets();
   }
 
-  @Get('/preview')
-  previewSet() {
-    return this.osuService.preview();
-  }
+  // TODO: do this
+  // @Get('/preview')
+  // async previewSet() {
+  //   return this.osuService.preview();
+  // }
 
   @Get('/:id')
-  findById(@Param('id') id: string) {
+  async findById(@Param('id') id: number) {
     return this.beatmapService.findOneSet(id);
   }
 
-  @Post('/')
-  createOne(@Body payload: CreateSetDTO) {
-    return this.beatmapService.createOne(payload);
+  @Post('/import/:osu_id')
+  async importOne(@Param('osu_id') id: number) {
+    const { data: beatmapset } = await await this.osuService
+      .findOne(id)
+      .toPromise();
+
+    return this.beatmapService.createOne({
+      artist: beatmapset.artist,
+      cover_url: beatmapset.covers['cover@2x'],
+      maps:
+        beatmapset.beatmaps?.map((beatmap) => ({
+          accuracy: beatmap.accuracy,
+          approach_rate: beatmap.ar,
+          bpm: beatmap.bpm,
+          circle_size: beatmap.cs,
+          drain_rate: beatmap.drain,
+          osu_id: beatmap.id,
+          status: beatmap.status,
+          total_length: beatmap.total_length,
+          version: beatmap.version,
+          mode: beatmap.mode,
+        })) || [],
+      osu_id: beatmapset.id,
+      pool_tags: [],
+      status: beatmapset.status,
+      title: beatmapset.title,
+      // TODO: Grab user from session
+      osu_user_id: beatmapset.user_id,
+    });
   }
 
   @Delete('/:id')
-  deleteOne(@Param('id') id: number) {
-    return this.beatmapService.delete(id);
+  async deleteOne(@Param('id') id: number) {
+    return this.beatmapService.deleteOneSet(id);
   }
 }

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { CreateSetDTO } from './dto/create-set.dto';
 
 import { Map } from './entities/map.entity';
 import { Set } from './entities/set.entity';
@@ -22,9 +23,46 @@ export class BeatmapsetService {
     return this.mapRepository.find();
   }
 
-  findOneSet(id: string): Promise<Set> {
+  findOneSet(id: number): Promise<Set> {
     return this.setRepository.findOne(id);
   }
 
-  createOne(payload: CreateSetDTO): Promise<Set> {}
+  deleteOneSet(id: number) {
+    return this.mapRepository.delete(id);
+  }
+
+  async createOne(payload: CreateSetDTO): Promise<Set> {
+    const maps = payload.maps.map((map) =>
+      this.mapRepository.create({
+        accuracy: map.accuracy,
+        approach_rate: map.approach_rate,
+        bpm: map.bpm,
+        circle_size: map.circle_size,
+        drain_rate: map.drain_rate,
+        mode: map.mode,
+        osu_id: map.osu_id,
+        status: map.status,
+        total_length: map.total_length,
+        used_in: [],
+        version: map.version,
+      }),
+    );
+
+    await this.mapRepository.save(maps);
+
+    const set = this.setRepository.create({
+      artist: payload.artist,
+      cover_url: payload.cover_url,
+      osu_id: payload.osu_id,
+      pool_tags: payload.pool_tags,
+      status: payload.status,
+      title: payload.title,
+      osu_user_id: payload.osu_user_id,
+      maps: maps,
+    });
+
+    await this.setRepository.save(set);
+
+    return set;
+  }
 }

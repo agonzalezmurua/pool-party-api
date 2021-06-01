@@ -1,5 +1,6 @@
 import { Timestamp } from 'typeorm';
 import { BeatmapSetCompact } from './beatmap-set-compact.type';
+import { Beatmap } from './beatmap.type';
 
 export type BeatmapSet = BeatmapSetCompact & {
   availability: {
@@ -30,4 +31,5 @@ export type BeatmapSet = BeatmapSetCompact & {
   storyboard: boolean;
   submitted_date?: Timestamp;
   tags: string;
+  beatmaps?: Beatmap[];
 };

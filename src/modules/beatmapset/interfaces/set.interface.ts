@@ -1,10 +1,10 @@
 import { IMap } from './map.interface';
 
 export interface ISet {
-  osu_id: string;
+  osu_id: number;
   artist: string;
   title: string;
-  user_id: string;
+  osu_user_id: number;
   submited_date: Date;
   status: string;
   cover_url: string;

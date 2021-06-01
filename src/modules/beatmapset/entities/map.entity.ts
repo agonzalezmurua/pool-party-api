@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 
 import { IMap } from '../interfaces/map.interface';
-import { Mode } from '../interfaces/mode.enum';
+import { GameMode } from '../interfaces/game-mode.enum';
 
 @Entity('maps')
 export class Map implements IMap {
@@ -16,10 +16,10 @@ export class Map implements IMap {
   id: number;
 
   @Column()
-  osu_id: string;
+  osu_id: number;
 
   @Column()
-  mode: Mode;
+  mode: GameMode;
 
   @Column()
   status: string;
