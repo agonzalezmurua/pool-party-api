@@ -5,12 +5,15 @@ import { OsuService } from './osu.service';
 
 @Module({
   imports: [
-    ConfigModule,
     HttpModule.registerAsync({
-      useFactory: async (config: ConfigService) => ({
-        baseURL:
-          config.get<string>('osu.url') + config.get<string>('osu.api_path'),
-      }),
+      imports: [ConfigModule],
+      useFactory: async (config: ConfigService) => {
+        return {
+          baseURL:
+            config.get<string>('osu.url') + config.get<string>('osu.api_path'),
+        };
+      },
+      inject: [ConfigService],
     }),
   ],
   providers: [OsuService],

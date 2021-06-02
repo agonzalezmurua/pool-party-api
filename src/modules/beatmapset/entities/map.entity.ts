@@ -1,21 +1,16 @@
-import { Pool } from '@src/modules/event/entities/pool.entity';
-import {
-  Column,
-  Entity,
-  JoinTable,
-  ManyToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 import { IMap } from '../interfaces/map.interface';
 import { GameMode } from '../interfaces/game-mode.enum';
+import { ISet } from '../interfaces/set.interface';
+import { Set } from './set.entity';
 
 @Entity('maps')
 export class Map implements IMap {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ unique: true })
   osu_id: number;
 
   @Column()
@@ -42,10 +37,14 @@ export class Map implements IMap {
   @Column()
   drain_rate: number;
 
-  @Column()
+  @Column('decimal', {
+    transformer: {
+      to: (value: number) => String(value),
+      from: (value: string) => Number(value),
+    },
+  })
   bpm: number;
 
-  @ManyToMany(() => Pool)
-  @JoinTable()
-  used_in: Pool[];
+  @ManyToOne(() => Set, (set) => set.maps)
+  set: ISet;
 }

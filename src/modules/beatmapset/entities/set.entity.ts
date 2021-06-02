@@ -1,10 +1,4 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { ISet } from '../interfaces/set.interface';
 import { Tags } from '../interfaces/tags.enum';
 
@@ -27,7 +21,7 @@ export class Set implements ISet {
   @Column()
   osu_user_id: number;
 
-  @CreateDateColumn()
+  @Column()
   submited_date: Date;
 
   @Column()
@@ -39,6 +33,6 @@ export class Set implements ISet {
   @Column('text', { array: true })
   pool_tags: Tags[];
 
-  @OneToMany(() => Map, (map) => map.id, { cascade: true })
+  @OneToMany(() => Map, (map) => map.set, { cascade: true, eager: true })
   maps: Map[];
 }

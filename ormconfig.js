@@ -4,6 +4,6 @@ module.exports = {
   port: 5432,
   username: 'postgres',
   database: 'pool-party',
-  synchronize: process.env.DEPLOY_ENV !== 'production',
+  synchronize: true,
   entities: ['dist/**/*.entity{.ts,.js}'],
 };

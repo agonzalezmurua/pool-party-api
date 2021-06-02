@@ -43,7 +43,6 @@ export class BeatmapsetService {
         osu_id: map.osu_id,
         status: map.status,
         total_length: map.total_length,
-        used_in: [],
         version: map.version,
       }),
     );
@@ -58,6 +57,7 @@ export class BeatmapsetService {
       status: payload.status,
       title: payload.title,
       osu_user_id: payload.osu_user_id,
+      submited_date: payload.submitted_date,
       maps: maps,
     });
 

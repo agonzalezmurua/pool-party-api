@@ -1,5 +1,5 @@
-import { IPool } from '@src/modules/event/interfaces/pool.interface';
 import { GameMode } from '@src/modules/osu/interfaces/gamemode.type';
+import { ISet } from './set.interface';
 
 export interface IMap {
   osu_id: number;
@@ -12,5 +12,5 @@ export interface IMap {
   circle_size: number;
   drain_rate: number;
   bpm: number;
-  used_in: IPool[];
+  set: ISet;
 }

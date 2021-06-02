@@ -7,7 +7,7 @@ export type BeatmapSet = BeatmapSetCompact & {
     download_disabled: boolean;
     more_information?: string;
   };
-  bpm: number;
+  bpm: string;
   can_be_hyped: boolean;
   /** Username of the mapper at the time of beatmapset creation. */
   creator: string;

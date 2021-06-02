@@ -24,13 +24,14 @@ export class AuthController {
   @ApiResponse({ status: HttpStatus.TEMPORARY_REDIRECT })
   async osuLogin(): Promise<void> {
     // initiates the Osu OAuth2 login flow
+    // does not actually need to do anything here
   }
 
   @UseGuards(OsuAuthGuard)
   @Get('osu/callback')
   @ApiResponse({ status: HttpStatus.OK, type: AuthPayload })
   async osuLoginCallback(
-    @Query('code') code: string,
+    @Query('code') code: string, // Injected for swagger clarity, unused directly but required to work
     @Req() req,
   ): Promise<AuthPayload> {
     return await this.authService.login(req.user.osu_id, UserProviderKind.osu);
