@@ -26,17 +26,17 @@ export class Pool implements IPool {
   @Column()
   cover_url: string;
 
-  // @ManyToMany(() => Map)
-  // @JoinTable()
+  @ManyToMany(() => Map, { eager: true })
+  @JoinTable()
   beatmaps: Map[];
 
   @Column()
   status: PoolStatus;
 
-  // @ManyToMany(() => Tournament)
-  // @JoinTable()
+  @ManyToMany(() => Tournament)
+  @JoinTable()
   used_in: Tournament[];
 
-  @OneToOne(() => User)
+  @OneToOne(() => User, { eager: true })
   created_by: User;
 }

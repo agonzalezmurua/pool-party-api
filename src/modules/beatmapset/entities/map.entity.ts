@@ -1,9 +1,16 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 import { IMap } from '../interfaces/map.interface';
 import { GameMode } from '../interfaces/game-mode.enum';
-import { ISet } from '../interfaces/set.interface';
 import { Set } from './set.entity';
+import { Pool } from '@src/modules/event/entities/pool.entity';
 
 @Entity('maps')
 export class Map implements IMap {
@@ -46,5 +53,9 @@ export class Map implements IMap {
   bpm: number;
 
   @ManyToOne(() => Set, (set) => set.maps)
-  set: ISet;
+  set: Set;
+
+  @ManyToMany(() => Pool)
+  @JoinTable()
+  used_in: Pool[];
 }

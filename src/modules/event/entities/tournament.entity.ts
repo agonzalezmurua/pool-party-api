@@ -5,11 +5,13 @@ import { ITournament } from '../interfaces/tournament.interface';
 import { TournamentStatus } from '../interfaces/tournament.status.enum';
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinTable,
   ManyToMany,
   OneToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 @Entity('tournaments')
@@ -23,7 +25,10 @@ export class Tournament implements ITournament {
   @Column()
   cover_url: string;
 
-  @ManyToMany(() => Pool)
+  @ManyToMany(() => Pool, {
+    eager: true,
+    cascade: ['insert', 'recover', 'update'],
+  })
   @JoinTable()
   pools: Pool[];
 
@@ -32,4 +37,10 @@ export class Tournament implements ITournament {
 
   @OneToOne(() => User)
   created_by: User;
+
+  @CreateDateColumn({ name: 'created_at' })
+  created_at: Date;
+
+  @UpdateDateColumn({ name: 'updated_at' })
+  last_updated: Date;
 }
