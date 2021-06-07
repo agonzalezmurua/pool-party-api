@@ -40,6 +40,6 @@ export class Pool implements IPool {
   @JoinTable()
   used_in: Tournament[];
 
-  @ManyToOne(() => User, (user) => user.pools)
+  @ManyToOne(() => User, (user) => user.pools, { eager: true })
   created_by: User;
 }

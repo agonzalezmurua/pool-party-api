@@ -30,9 +30,9 @@ export class ResponsePoolDTO {
 
   static fromEntity(entity: Pool): ResponsePoolDTO {
     return {
-      beatmaps: entity.beatmaps.map(ResponseMapSimpleDTO.fromEntity),
+      beatmaps: entity.beatmaps?.map(ResponseMapSimpleDTO.fromEntity),
       created_by: ResponseUserDTO.fromEntity(entity.created_by),
-      used_in: entity.used_in.map(ResponseTournamentSimpleDTO.fromEntity),
+      used_in: entity.used_in?.map(ResponseTournamentSimpleDTO.fromEntity),
       cover_url: entity.cover_url,
       id: entity.id,
       name: entity.name,
