@@ -51,6 +51,6 @@ export class UserService {
       where: { kind: kind, provider_id: id },
     });
 
-    return provider.user;
+    return provider?.user;
   }
 }

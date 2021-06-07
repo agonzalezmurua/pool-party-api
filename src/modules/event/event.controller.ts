@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -15,11 +16,17 @@ import { EventService } from './event.service';
 import { ResponseTournamentDTO } from './dto/response-tournament.dto';
 import { ResponsePoolDTO } from './dto/response-pool.dto';
 import { CreatePoolDTO } from './dto/create-pool.dto';
+import { BeatmapsetService } from '../beatmapset/beatmapset.service';
 
 @ApiTags('events')
 @Controller('events')
 export class EventController {
-  constructor(private eventService: EventService) {}
+  constructor(
+    private eventService: EventService,
+    private beatmapsetService: BeatmapsetService,
+  ) {}
+
+  //#region Tournaments
 
   // TODO: Add query
   @ApiResponse({
@@ -92,6 +99,9 @@ export class EventController {
   //   return this.eventService.createTournament();
   // }
 
+  //#endregion Tournaments
+
+  //#region Pools
   // TODO: Add query
   @ApiResponse({
     status: HttpStatus.OK,
@@ -143,9 +153,9 @@ export class EventController {
     return ResponsePoolDTO.fromEntity(entity);
   }
 
-  // TODO: Creation flow
   @ApiResponse({ status: HttpStatus.OK, type: ResponsePoolDTO })
   @ApiResponse({ status: HttpStatus.UNAUTHORIZED })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Post('/pools')
@@ -153,7 +163,16 @@ export class EventController {
     @Body() create: CreatePoolDTO,
     @Req() request: Express.Request,
   ) {
-    const entity = await this.eventService.createPool(create, request.user);
+    const maps = await this.beatmapsetService.findMapsByIds(create.beatmaps);
+
+    if (maps.length !== create.beatmaps.length) {
+      throw new BadRequestException();
+    }
+    const entity = await this.eventService.createPool(
+      create,
+      maps,
+      request.user,
+    );
 
     return ResponsePoolDTO.fromEntity(entity);
   }
@@ -165,4 +184,6 @@ export class EventController {
   // async updatePool(@Req() request: Express.Request) {
   //   return this.eventService.createTournament();
   // }
+
+  //#endregion Pools
 }

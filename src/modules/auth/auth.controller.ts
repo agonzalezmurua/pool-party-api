@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   HttpStatus,
+  Post,
   Query,
   Req,
   UseGuards,
@@ -32,8 +33,14 @@ export class AuthController {
   @ApiResponse({ status: HttpStatus.OK, type: AuthPayload })
   async osuLoginCallback(
     @Query('code') code: string, // Injected for swagger clarity, unused directly but required to work
-    @Req() req,
+    @Req() req: Express.Request,
   ): Promise<AuthPayload> {
-    return await this.authService.login(req.user.osu_id, UserProviderKind.osu);
+    const { provider_id } = req.user.providers.find(
+      (p) => p.kind === UserProviderKind.osu,
+    );
+    return await this.authService.login(
+      Number(provider_id),
+      UserProviderKind.osu,
+    );
   }
 }

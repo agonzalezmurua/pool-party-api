@@ -13,5 +13,6 @@ import { Set } from './entities/set.entity';
   imports: [TypeOrmModule.forFeature([Set, Map]), OsuModule],
   providers: [BeatmapsetService],
   controllers: [BeatmapController],
+  exports: [BeatmapsetService],
 })
 export class BeatmapsetModule {}

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { Map } from '../beatmapset/entities/map.entity';
 import { User } from '../user/entities/user.entity';
 import { CreatePoolDTO } from './dto/create-pool.dto';
 
@@ -50,15 +51,25 @@ export class EventService {
 
   // }
 
-  createPool(payload: CreatePoolDTO, user: User): Promise<Pool> {
+  createPool(payload: CreatePoolDTO, maps: Map[], user: User): Promise<Pool> {
+    let status: PoolStatus;
+
+    if (payload.beatmaps.length === 0) {
+      status = PoolStatus.draft;
+    } else {
+      status = PoolStatus.public;
+    }
+
     const entity = this.poolRepository.create({
       cover_url: payload.cover_url,
       created_by: user,
       name: payload.name,
       used_in: [],
-      status: PoolStatus.draft,
-      beatmaps: [],
+      status: status,
+      beatmaps: maps,
     });
+
+    console.log(entity);
 
     return this.poolRepository.save(entity);
   }

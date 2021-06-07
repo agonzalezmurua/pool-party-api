@@ -11,6 +11,7 @@ import { IMap } from '../interfaces/map.interface';
 import { GameMode } from '../interfaces/game-mode.enum';
 import { Set } from './set.entity';
 import { Pool } from '@src/modules/event/entities/pool.entity';
+import { DecimalTransformer } from '@src/utils/transformers/decimal';
 
 @Entity('maps')
 export class Map implements IMap {
@@ -20,7 +21,7 @@ export class Map implements IMap {
   @Column({ unique: true })
   osu_id: number;
 
-  @Column()
+  @Column({ enum: GameMode })
   mode: GameMode;
 
   @Column()
@@ -32,23 +33,28 @@ export class Map implements IMap {
   @Column()
   version: string;
 
-  @Column()
+  @Column('decimal', {
+    transformer: DecimalTransformer,
+  })
   accuracy: number;
 
-  @Column()
+  @Column('decimal', {
+    transformer: DecimalTransformer,
+  })
   approach_rate: number;
 
-  @Column()
+  @Column('decimal', {
+    transformer: DecimalTransformer,
+  })
   circle_size: number;
 
-  @Column()
+  @Column('decimal', {
+    transformer: DecimalTransformer,
+  })
   drain_rate: number;
 
   @Column('decimal', {
-    transformer: {
-      to: (value: number) => String(value),
-      from: (value: string) => Number(value),
-    },
+    transformer: DecimalTransformer,
   })
   bpm: number;
 

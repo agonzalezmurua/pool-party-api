@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Controller,
   Delete,
   Get,
@@ -14,6 +15,7 @@ import { BeatmapsetService } from './beatmapset.service';
 import { OsuService } from '../osu/osu.service';
 import { CreateSetDTO } from './dto/create-set.dto';
 import { ResponseSetDTO } from './dto/response-set.dto';
+import { QueryFailedError } from 'typeorm';
 
 @ApiTags('beatmapset')
 @Controller('beatmapset')
@@ -42,7 +44,7 @@ export class BeatmapController {
   async previewSet(@Param('osu_id') id: number): Promise<CreateSetDTO> {
     const entity = await this.osuService.getBeatmapset(id);
 
-    return CreateSetDTO.fromEntity(entity);
+    return CreateSetDTO.fromOsu(entity);
   }
 
   @ApiResponse({ status: HttpStatus.OK, type: ResponseSetDTO })
@@ -59,10 +61,20 @@ export class BeatmapController {
   @ApiResponse({ status: HttpStatus.CREATED, type: ResponseSetDTO })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST })
   @Post('/import/:osu_id')
-  async importOne(@Param('osu_id') id: number): Promise<CreateSetDTO> {
-    const entity = await this.osuService.getBeatmapset(id);
+  async importOne(@Param('osu_id') id: number): Promise<ResponseSetDTO> {
+    try {
+      const beatmapset = await this.osuService.getBeatmapset(id);
 
-    return CreateSetDTO.fromEntity(entity);
+      const create = CreateSetDTO.fromOsu(beatmapset);
+
+      const entity = await this.beatmapService.createOne(create);
+
+      return ResponseSetDTO.fromEntity(entity);
+    } catch (error) {
+      if (error instanceof QueryFailedError) {
+        throw new BadRequestException();
+      }
+    }
   }
 
   // TODO: validate that only admin or moderator can delete

@@ -8,8 +8,11 @@ import { PoolStatus } from '../interfaces/pool.status.enum';
 import {
   Column,
   Entity,
+  JoinColumn,
   JoinTable,
   ManyToMany,
+  ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -37,6 +40,6 @@ export class Pool implements IPool {
   @JoinTable()
   used_in: Tournament[];
 
-  @OneToOne(() => User, { eager: true })
+  @ManyToOne(() => User, (user) => user.pools)
   created_by: User;
 }

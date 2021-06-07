@@ -31,8 +31,12 @@ export class BeatmapsetService {
     return this.mapRepository.delete(id);
   }
 
+  async findMapsByIds(ids: number[]): Promise<Map[]> {
+    return this.mapRepository.findByIds(ids);
+  }
+
   async createOne(payload: CreateSetDTO): Promise<Set> {
-    const maps = payload.maps.map((map) =>
+    const maps: Map[] = payload.maps.map((map) =>
       this.mapRepository.create({
         accuracy: map.accuracy,
         approach_rate: map.approach_rate,
@@ -47,8 +51,6 @@ export class BeatmapsetService {
       }),
     );
 
-    await this.mapRepository.save(maps);
-
     const set = this.setRepository.create({
       artist: payload.artist,
       cover_url: payload.cover_url,
@@ -61,8 +63,6 @@ export class BeatmapsetService {
       maps: maps,
     });
 
-    await this.setRepository.save(set);
-
-    return set;
+    return this.setRepository.save(set);
   }
 }

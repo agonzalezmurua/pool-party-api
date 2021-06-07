@@ -32,7 +32,7 @@ export class CreateSetDTO {
   @ApiProperty()
   submitted_date: Date;
 
-  static fromEntity(entity: BeatmapSet): CreateSetDTO {
+  static fromOsu(entity: BeatmapSet): CreateSetDTO {
     return {
       artist: entity.artist,
       cover_url: entity.covers['cover@2x'],
