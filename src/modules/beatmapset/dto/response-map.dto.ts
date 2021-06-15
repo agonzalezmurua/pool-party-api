@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ResponsePoolSimpleDTO } from '@src/modules/event/dto/response-pool-simple.dto';
+import { ResponsePoolSimpleDTO } from '../../../modules/event/dto/response-pool-simple.dto';
 import { Map } from '../entities/map.entity';
 
 import { GameMode } from '../interfaces/game-mode.enum';

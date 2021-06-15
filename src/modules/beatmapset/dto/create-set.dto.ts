@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { BeatmapSet } from '@src/modules/osu/interfaces/Beatmap-set.type';
+import { BeatmapSet } from '../../../modules/osu/interfaces/Beatmap-set.type';
 
 import { Tags } from '../interfaces/tags.enum';
 import { CreateMapDTO } from './create-map.dto';

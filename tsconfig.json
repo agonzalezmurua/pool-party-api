@@ -9,13 +9,10 @@
     "target": "es2017",
     "sourceMap": true,
     "outDir": "./dist",
-    "baseUrl": "./",
-    "paths": {
-      "@src/*": ["src/*"]
-    },
     "resolveJsonModule": true,
     "esModuleInterop": true,
-    "incremental": true
+    "incremental": true,
+    "rootDir": "."
   },
-  "exclude": ["_old", "dist"]
+  "exclude": ["dist"]
 }

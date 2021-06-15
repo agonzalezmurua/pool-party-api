@@ -13,7 +13,7 @@ import { UserService } from './user.service';
 
 import { ResponseUserDTO } from './dto/response-user.dto';
 
-@ApiTags('users')
+@ApiTags('Users')
 @Controller('users')
 export class UserController {
   constructor(private readonly usersService: UserService) {}

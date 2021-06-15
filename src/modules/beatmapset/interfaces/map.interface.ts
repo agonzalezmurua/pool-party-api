@@ -1,4 +1,4 @@
-import { GameMode } from '@src/modules/osu/interfaces/gamemode.type';
+import { GameMode } from '../../../modules/osu/interfaces/gamemode.type';
 import { ISet } from './set.interface';
 
 export interface IMap {

@@ -1,1 +1,1 @@
-export { UserProviderKind as AuthProviders } from '@src/modules/user/interfaces/user-provider.kind.enum';
+export { UserProviderKind as AuthProviders } from '../../../modules/user/interfaces/user-provider.kind.enum';

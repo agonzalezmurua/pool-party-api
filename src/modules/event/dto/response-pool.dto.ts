@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ResponseMapSimpleDTO } from '@src/modules/beatmapset/dto/response-map-simple.dto';
-import { ResponseUserDTO } from '@src/modules/user/dto/response-user.dto';
+import { ResponseMapSimpleDTO } from '../../../modules/beatmapset/dto/response-map-simple.dto';
+import { ResponseUserDTO } from '../../../modules/user/dto/response-user.dto';
 import { Pool } from '../entities/pool.entity';
 
 import { PoolStatus } from '../interfaces/pool.status.enum';

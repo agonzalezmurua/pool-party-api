@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { ResponseUserDTO } from '@src/modules/user/dto/response-user.dto';
+import { ResponseUserDTO } from '../../../modules/user/dto/response-user.dto';
 import { Tournament } from '../entities/tournament.entity';
 
 import { TournamentStatus } from '../interfaces/tournament.status.enum';

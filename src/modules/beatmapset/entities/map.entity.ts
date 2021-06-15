@@ -10,8 +10,8 @@ import {
 import { IMap } from '../interfaces/map.interface';
 import { GameMode } from '../interfaces/game-mode.enum';
 import { Set } from './set.entity';
-import { Pool } from '@src/modules/event/entities/pool.entity';
-import { DecimalTransformer } from '@src/utils/transformers/decimal';
+import { Pool } from '../../../modules/event/entities/pool.entity';
+import { DecimalTransformer } from '../../../utils/transformers/decimal';
 
 @Entity('maps')
 export class Map implements IMap {

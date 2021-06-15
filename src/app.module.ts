@@ -7,7 +7,7 @@ import { BeatmapsetModule } from './modules/beatmapset/beatmapset.module';
 import { EventModule } from './modules/event/event.module';
 import { AuthService } from './modules/auth/auth.service';
 import { AuthModule } from './modules/auth/auth.module';
-import configuration from '../config/configuration';
+import configuration from './configuration';
 
 @Module({
   imports: [

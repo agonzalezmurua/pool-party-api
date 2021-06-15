@@ -3,7 +3,7 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { IUser } from '../interfaces/user.interface';
 import { Roles } from '../interfaces/user-roles.enum';
 import { UserProvider } from './user-provider.entity';
-import { Pool } from '@src/modules/event/entities/pool.entity';
+import { Pool } from '../../../modules/event/entities/pool.entity';
 
 @Entity('users')
 export class User implements IUser {

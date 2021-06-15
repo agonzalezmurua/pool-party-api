@@ -1,4 +1,4 @@
-import { User } from '@src/modules/user/entities/user.entity';
+import { User } from '../../../modules/user/entities/user.entity';
 import { Pool } from './pool.entity';
 
 import { ITournament } from '../interfaces/tournament.interface';

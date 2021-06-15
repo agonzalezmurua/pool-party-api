@@ -65,4 +65,10 @@ export class BeatmapsetService {
 
     return this.setRepository.save(set);
   }
+
+  async doesAllMapsExist(ids: number[]) {
+    const maps = await this.mapRepository.findByIds(ids);
+
+    return maps.length === ids.length;
+  }
 }
