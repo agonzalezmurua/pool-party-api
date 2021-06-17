@@ -3,6 +3,7 @@ import { PoolStatus } from '../interfaces/pool.status.enum';
 
 /** Simplified response, without any relationship */
 export class ResponsePoolSimpleDTO {
+  /** Unique identifier */
   id: number;
 
   name: string;

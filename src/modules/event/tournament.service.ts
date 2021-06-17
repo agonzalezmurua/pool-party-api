@@ -58,7 +58,7 @@ export class TournamentService {
     const entity = await this.repo.findOne({
       where: { created_by: { id: userId }, id: tournamentId },
     });
-    return entity !== null;
+    return entity !== undefined;
   }
 
   async updateTournament(

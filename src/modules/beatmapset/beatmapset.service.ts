@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateSetDTO } from './dto/create-set.dto';
+import { PreviewSetDTO } from './dto/preview-set.dto';
 
 import { Map } from './entities/map.entity';
 import { Set } from './entities/set.entity';
@@ -35,7 +35,7 @@ export class BeatmapsetService {
     return this.mapRepository.findByIds(ids);
   }
 
-  async createOne(payload: CreateSetDTO): Promise<Set> {
+  async createOne(payload: PreviewSetDTO): Promise<Set> {
     const maps: Map[] = payload.maps.map((map) =>
       this.mapRepository.create({
         accuracy: map.accuracy,

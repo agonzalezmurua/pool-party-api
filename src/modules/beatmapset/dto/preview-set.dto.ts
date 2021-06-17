@@ -1,9 +1,9 @@
-import { BeatmapSet } from '../../../modules/osu/interfaces/Beatmap-set.type';
+import { BeatmapSet } from '../../osu/interfaces/Beatmap-set.type';
 
 import { Tags } from '../interfaces/tags.enum';
-import { CreateMapDTO } from './create-map.dto';
+import { PreviewMapDTO } from './create-map.dto';
 
-export class CreateSetDTO {
+export class PreviewSetDTO {
   osu_id: number;
 
   artist: string;
@@ -16,13 +16,13 @@ export class CreateSetDTO {
 
   pool_tags: Tags[];
 
-  maps: CreateMapDTO[];
+  maps: PreviewMapDTO[];
 
   osu_user_id: number;
 
   submitted_date: Date;
 
-  static fromOsu(entity: BeatmapSet): CreateSetDTO {
+  static fromOsu(entity: BeatmapSet): PreviewSetDTO {
     return {
       artist: entity.artist,
       cover_url: entity.covers['cover@2x'],

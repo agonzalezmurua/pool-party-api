@@ -1,34 +1,9 @@
-import { ApiProperty, getSchemaPath } from '@nestjs/swagger';
+import { IsEnum } from 'class-validator';
 import { TournamentStatus } from '../interfaces/tournament.status.enum';
-import { CreatePoolDTO } from './create-pool.dto';
 
-export class UpdateTournamentDTO {
-  name: string;
+import { CreateTournamentDTO } from './create-tournament.dto';
 
-  cover_url: string;
-
-  /** Either a ID of an existing Pool, or can create a Pool directly */
-  @ApiProperty({
-    type: 'array',
-    items: {
-      oneOf: [
-        { type: 'number', example: 1 },
-        {
-          $ref: getSchemaPath(CreatePoolDTO),
-          example: {
-            beatmaps: [1],
-            cover_url:
-              'https://icountryschool.cl/wp-content/uploads/2020/08/placeholder.png',
-            name: 'TEST',
-          },
-        },
-      ],
-    },
-  })
-  pools: Array<number | CreatePoolDTO>;
-
+export class UpdateTournamentDTO extends CreateTournamentDTO {
+  @IsEnum(TournamentStatus)
   status: TournamentStatus;
-
-  /** Array of user id's */
-  collaborators: number[] = [];
 }

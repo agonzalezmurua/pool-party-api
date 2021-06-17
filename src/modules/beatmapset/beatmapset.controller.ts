@@ -8,12 +8,12 @@ import {
   Param,
   Post,
 } from '@nestjs/common';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { BeatmapsetService } from './beatmapset.service';
 
 import { OsuService } from '../osu/osu.service';
-import { CreateSetDTO } from './dto/create-set.dto';
+import { PreviewSetDTO } from './dto/preview-set.dto';
 import { ResponseSetDTO } from './dto/response-set.dto';
 import { QueryFailedError } from 'typeorm';
 
@@ -39,12 +39,12 @@ export class BeatmapController {
     return entities.map(ResponseSetDTO.fromEntity);
   }
 
-  @ApiResponse({ status: HttpStatus.OK, type: CreateSetDTO })
+  @ApiOkResponse({ type: PreviewSetDTO })
   @Get('/preview/:osu_id')
-  async previewSet(@Param('osu_id') id: number): Promise<CreateSetDTO> {
+  async previewSet(@Param('osu_id') id: number): Promise<PreviewSetDTO> {
     const entity = await this.osuService.getBeatmapset(id);
 
-    return CreateSetDTO.fromOsu(entity);
+    return PreviewSetDTO.fromOsu(entity);
   }
 
   @ApiResponse({ status: HttpStatus.OK, type: ResponseSetDTO })
@@ -65,7 +65,7 @@ export class BeatmapController {
     try {
       const beatmapset = await this.osuService.getBeatmapset(id);
 
-      const create = CreateSetDTO.fromOsu(beatmapset);
+      const create = PreviewSetDTO.fromOsu(beatmapset);
 
       const entity = await this.beatmapService.createOne(create);
 

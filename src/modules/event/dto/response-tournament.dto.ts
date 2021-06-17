@@ -21,6 +21,8 @@ export class ResponseTournamentDTO {
 
   last_updated: Date;
 
+  collaborators: ResponseUserDTO[];
+
   static fromEntity(e: Tournament): ResponseTournamentDTO {
     return {
       cover_url: e.cover_url,
@@ -31,6 +33,7 @@ export class ResponseTournamentDTO {
       name: e.name,
       pools: e.pools.map(ResponsePoolSimpleDTO.fromEntity),
       status: e.status,
+      collaborators: e.collaborators.map((u) => ResponseUserDTO.fromEntity(u)),
     };
   }
 }

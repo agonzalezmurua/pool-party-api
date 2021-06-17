@@ -1,24 +1,20 @@
-import { ApiProperty, getSchemaPath } from '@nestjs/swagger';
-
-import { CreatePoolDTO } from './create-pool.dto';
+import { IsNotEmpty, IsNumber, IsUrl, MaxLength } from 'class-validator';
 
 export class CreateTournamentDTO {
+  @MaxLength(255)
+  @IsNotEmpty()
   name: string;
 
+  @MaxLength(1024)
+  @IsNotEmpty()
+  @IsUrl()
   cover_url: string;
 
   /** Array of user id's or new pools */
-  @ApiProperty({
-    type: 'array',
-    items: {
-      oneOf: [
-        { type: 'number', example: 1 },
-        { $ref: getSchemaPath(CreatePoolDTO) },
-      ],
-    },
-  })
-  pools: Array<number | CreatePoolDTO>;
+  @IsNumber({}, { each: true })
+  pools?: number[] = [];
 
   /** Array of user id's */
-  collaborators: number[] = [];
+  @IsNumber({}, { each: true })
+  collaborators?: number[] = [];
 }

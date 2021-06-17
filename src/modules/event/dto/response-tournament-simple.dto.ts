@@ -1,4 +1,3 @@
-import { ApiProperty } from '@nestjs/swagger';
 import { Tournament } from '../entities/tournament.entity';
 
 import { TournamentStatus } from '../interfaces/tournament.status.enum';

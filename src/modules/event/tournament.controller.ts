@@ -9,9 +9,15 @@ import {
   Patch,
   Post,
   Req,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiResponse,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { TournamentService } from './tournament.service';
 
@@ -113,6 +119,7 @@ export class TournamentController {
     await this.tournamentService.deleteTournament(id);
   }
 
+  @ApiUnauthorizedResponse()
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Patch('/:id')
@@ -127,7 +134,7 @@ export class TournamentController {
         id,
       )) === false
     ) {
-      throw new NotFoundException();
+      throw new UnauthorizedException();
     }
 
     const entity = await this.tournamentService.updateTournament(

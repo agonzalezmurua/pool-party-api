@@ -1,6 +1,6 @@
 import { GameMode } from '../interfaces/game-mode.enum';
 
-export class CreateMapDTO {
+export class PreviewMapDTO {
   osu_id: number;
 
   mode: GameMode;
