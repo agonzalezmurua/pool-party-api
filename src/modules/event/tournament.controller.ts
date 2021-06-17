@@ -14,6 +14,7 @@ import {
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
+  ApiOkResponse,
   ApiResponse,
   ApiTags,
   ApiUnauthorizedResponse,
@@ -31,36 +32,19 @@ export class TournamentController {
   constructor(private tournamentService: TournamentService) {}
 
   // TODO: Add query
-  @ApiResponse({
-    status: HttpStatus.OK,
-    type: ResponseTournamentDTO,
-    isArray: true,
-  })
   @Get('/')
   async searchTournaments(): Promise<ResponseTournamentDTO[]> {
     const entities = await this.tournamentService.findAllTournaments();
     return entities.map(ResponseTournamentDTO.fromEntity);
   }
 
-  @ApiResponse({
-    status: HttpStatus.OK,
-    type: ResponseTournamentDTO,
-    isArray: true,
-  })
   @Get('/latest')
   async getLatestTournaments(): Promise<ResponseTournamentDTO[]> {
     const entities = await this.tournamentService.findAllTournaments();
     return entities.map(ResponseTournamentDTO.fromEntity);
   }
 
-  @ApiResponse({
-    status: HttpStatus.OK,
-    type: ResponseTournamentDTO,
-    isArray: true,
-  })
-  @ApiResponse({
-    status: HttpStatus.UNAUTHORIZED,
-  })
+  @ApiUnauthorizedResponse()
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get('/mine')
@@ -73,10 +57,6 @@ export class TournamentController {
     return entities.map(ResponseTournamentDTO.fromEntity);
   }
 
-  @ApiResponse({
-    status: HttpStatus.OK,
-    type: ResponseTournamentDTO,
-  })
   @Get('/:id')
   async findTournament(
     @Param('id') id: number,
@@ -100,6 +80,7 @@ export class TournamentController {
     return ResponseTournamentDTO.fromEntity(entity);
   }
 
+  @ApiUnauthorizedResponse()
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Delete('/:id')
@@ -113,7 +94,7 @@ export class TournamentController {
         id,
       )) === false
     ) {
-      throw new NotFoundException();
+      throw new UnauthorizedException();
     }
 
     await this.tournamentService.deleteTournament(id);

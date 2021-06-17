@@ -8,7 +8,13 @@ import {
   Param,
   Post,
 } from '@nestjs/common';
-import { ApiOkResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBadRequestResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { BeatmapsetService } from './beatmapset.service';
 
@@ -25,49 +31,51 @@ export class BeatmapController {
     private readonly osuService: OsuService,
   ) {}
 
-  @ApiResponse({ status: HttpStatus.OK, type: ResponseSetDTO, isArray: true })
   @Get()
   async searchSets(): Promise<ResponseSetDTO[]> {
     const entities = await this.beatmapService.findAllSets();
     return entities.map(ResponseSetDTO.fromEntity);
   }
 
-  @ApiResponse({ status: HttpStatus.OK, type: ResponseSetDTO, isArray: true })
   @Get('/latest')
   async searchLatestSets(): Promise<ResponseSetDTO[]> {
     const entities = await this.beatmapService.findAllSets();
     return entities.map(ResponseSetDTO.fromEntity);
   }
 
-  @ApiOkResponse({ type: PreviewSetDTO })
+  @ApiNotFoundResponse()
   @Get('/preview/:osu_id')
   async previewSet(@Param('osu_id') id: number): Promise<PreviewSetDTO> {
     const entity = await this.osuService.getBeatmapset(id);
 
+    if (entity === undefined) {
+      throw new NotFoundException();
+    }
+
     return PreviewSetDTO.fromOsu(entity);
   }
 
-  @ApiResponse({ status: HttpStatus.OK, type: ResponseSetDTO })
+  @ApiNotFoundResponse()
   @Get('/:id')
   async findById(@Param('id') id: number): Promise<ResponseSetDTO> {
     const entity = await this.beatmapService.findOneSet(id);
 
-    if (!entity) {
+    if (entity === undefined) {
       throw new NotFoundException();
     }
+
     return ResponseSetDTO.fromEntity(entity);
   }
 
-  @ApiResponse({ status: HttpStatus.CREATED, type: ResponseSetDTO })
-  @ApiResponse({ status: HttpStatus.BAD_REQUEST })
+  @ApiBadRequestResponse()
   @Post('/import/:osu_id')
   async importOne(@Param('osu_id') id: number): Promise<ResponseSetDTO> {
     try {
       const beatmapset = await this.osuService.getBeatmapset(id);
 
-      const create = PreviewSetDTO.fromOsu(beatmapset);
+      const dto = PreviewSetDTO.fromOsu(beatmapset);
 
-      const entity = await this.beatmapService.createOne(create);
+      const entity = await this.beatmapService.createOne(dto);
 
       return ResponseSetDTO.fromEntity(entity);
     } catch (error) {
@@ -78,9 +86,8 @@ export class BeatmapController {
   }
 
   // TODO: validate that only admin or moderator can delete
-  @ApiResponse({ status: HttpStatus.OK })
   @Delete('/:id')
-  async deleteOne(@Param('id') id: number) {
-    return this.beatmapService.deleteOneSet(id);
+  async deleteOne(@Param('id') id: number): Promise<void> {
+    await this.beatmapService.deleteOneSet(id);
   }
 }

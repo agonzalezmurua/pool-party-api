@@ -37,23 +37,19 @@ export class PoolController {
     private beatmapsetService: BeatmapsetService,
   ) {}
 
-  //#region Pools
   // TODO: Add query
-  @ApiOkResponse({ type: [ResponsePoolDTO] })
   @Get('/')
   async searchPools(): Promise<ResponsePoolDTO[]> {
     const entities = await this.poolService.findAllPools();
     return entities.map(ResponsePoolDTO.fromEntity);
   }
 
-  @ApiOkResponse({ type: [ResponsePoolDTO] })
   @Get('/latest')
   async getLatestPools(): Promise<ResponsePoolDTO[]> {
     const entities = await this.poolService.findAllPools();
     return entities.map(ResponsePoolDTO.fromEntity);
   }
 
-  @ApiOkResponse({ type: [ResponsePoolDTO] })
   @ApiUnauthorizedResponse()
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
@@ -65,14 +61,12 @@ export class PoolController {
     return entities.map(ResponsePoolDTO.fromEntity);
   }
 
-  @ApiOkResponse({ type: ResponsePoolDTO })
   @Get('/:id')
   async findPool(@Param('id') id: number): Promise<ResponsePoolDTO> {
     const entity = await this.poolService.findPool(id);
     return ResponsePoolDTO.fromEntity(entity);
   }
 
-  @ApiOkResponse({ type: ResponsePoolDTO })
   @ApiUnauthorizedResponse()
   @ApiBadRequestResponse()
   @ApiBearerAuth()
@@ -94,6 +88,8 @@ export class PoolController {
     return ResponsePoolDTO.fromEntity(entity);
   }
 
+  @ApiUnauthorizedResponse()
+  @ApiBadRequestResponse()
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Patch('/:id')
@@ -121,9 +117,8 @@ export class PoolController {
     return ResponsePoolDTO.fromEntity(entity);
   }
 
-  @ApiOkResponse()
-  @ApiBadRequestResponse()
   @ApiUnauthorizedResponse()
+  @ApiBadRequestResponse()
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Delete('/:id')
@@ -146,5 +141,4 @@ export class PoolController {
 
     return this.poolService.deletePool(id);
   }
-  //#endregion Pools
 }

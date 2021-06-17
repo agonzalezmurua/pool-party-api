@@ -28,7 +28,6 @@ export class AuthController {
 
   @UseGuards(OsuAuthGuard)
   @Get('osu/callback')
-  @ApiResponse({ status: HttpStatus.OK, type: AuthPayload })
   async osuLoginCallback(
     @Query('code') code: string, // Injected for swagger clarity, unused directly but required to work
     @Req() req: Express.Request,
