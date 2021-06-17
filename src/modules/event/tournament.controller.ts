@@ -3,8 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  HttpStatus,
-  NotFoundException,
   Param,
   Patch,
   Post,
@@ -14,8 +12,6 @@ import {
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
-  ApiOkResponse,
-  ApiResponse,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';

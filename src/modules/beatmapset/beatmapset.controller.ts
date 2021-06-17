@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  HttpStatus,
   NotFoundException,
   Param,
   Post,
@@ -11,8 +10,6 @@ import {
 import {
   ApiBadRequestResponse,
   ApiNotFoundResponse,
-  ApiOkResponse,
-  ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 
