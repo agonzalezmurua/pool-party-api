@@ -9,6 +9,7 @@ import { Pool } from './entities/pool.entity';
 import { Tournament } from './entities/tournament.entity';
 import { TournamentStatus } from './interfaces/tournament.status.enum';
 import { MapPoolCreateOrRelationToPartial } from './mappers/pool.mappers';
+import { MapCollaboratorRelationToPartial } from './mappers/tournament.mappers';
 
 @Injectable()
 export class TournamentService {
@@ -43,6 +44,9 @@ export class TournamentService {
       pools: dto.pools.map((pool) =>
         MapPoolCreateOrRelationToPartial(pool, owner),
       ),
+      collaborators: dto.collaborators.map((user) =>
+        MapCollaboratorRelationToPartial(user),
+      ),
     });
 
     await this.repo.save(entity);
@@ -67,6 +71,9 @@ export class TournamentService {
       status: dto.status,
       name: dto.name,
       cover_url: dto.cover_url,
+      collaborators: dto.collaborators.map((user) =>
+        MapCollaboratorRelationToPartial(user),
+      ),
     });
 
     // We dont add pools onto the merge operation since it's always additive, it does reduces the size of the array

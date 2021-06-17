@@ -1,5 +1,3 @@
-import { ApiProperty } from '@nestjs/swagger';
-
 import { ResponseUserDTO } from '../../../modules/user/dto/response-user.dto';
 import { Tournament } from '../entities/tournament.entity';
 
@@ -7,28 +5,20 @@ import { TournamentStatus } from '../interfaces/tournament.status.enum';
 import { ResponsePoolSimpleDTO } from './response-pool-simple.dto';
 
 export class ResponseTournamentDTO {
-  @ApiProperty()
   id: number;
 
-  @ApiProperty()
   name: string;
 
-  @ApiProperty()
   cover_url: string;
 
-  @ApiProperty({ type: ResponsePoolSimpleDTO, isArray: true })
   pools: Array<ResponsePoolSimpleDTO>;
 
-  @ApiProperty({ enum: TournamentStatus })
   status: TournamentStatus;
 
-  @ApiProperty({ type: ResponseUserDTO })
   created_by: ResponseUserDTO;
 
-  @ApiProperty()
   created_at: Date;
 
-  @ApiProperty()
   last_updated: Date;
 
   static fromEntity(e: Tournament): ResponseTournamentDTO {

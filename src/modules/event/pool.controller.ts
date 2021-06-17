@@ -4,7 +4,6 @@ import {
   Controller,
   Delete,
   Get,
-  HttpStatus,
   Param,
   Patch,
   Post,
@@ -12,7 +11,13 @@ import {
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBadRequestResponse,
+  ApiBearerAuth,
+  ApiOkResponse,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { BeatmapsetService } from '../beatmapset/beatmapset.service';
@@ -34,36 +39,22 @@ export class PoolController {
 
   //#region Pools
   // TODO: Add query
-  @ApiResponse({
-    status: HttpStatus.OK,
-    type: ResponsePoolDTO,
-    isArray: true,
-  })
+  @ApiOkResponse({ type: [ResponsePoolDTO] })
   @Get('/')
   async searchPools(): Promise<ResponsePoolDTO[]> {
     const entities = await this.poolService.findAllPools();
     return entities.map(ResponsePoolDTO.fromEntity);
   }
 
-  @ApiResponse({
-    status: HttpStatus.OK,
-    type: ResponsePoolDTO,
-    isArray: true,
-  })
+  @ApiOkResponse({ type: [ResponsePoolDTO] })
   @Get('/latest')
   async getLatestPools(): Promise<ResponsePoolDTO[]> {
     const entities = await this.poolService.findAllPools();
     return entities.map(ResponsePoolDTO.fromEntity);
   }
 
-  @ApiResponse({
-    status: HttpStatus.OK,
-    type: ResponsePoolDTO,
-    isArray: true,
-  })
-  @ApiResponse({
-    status: HttpStatus.UNAUTHORIZED,
-  })
+  @ApiOkResponse({ type: [ResponsePoolDTO] })
+  @ApiUnauthorizedResponse()
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get('/mine')
@@ -74,19 +65,16 @@ export class PoolController {
     return entities.map(ResponsePoolDTO.fromEntity);
   }
 
-  @ApiResponse({
-    status: HttpStatus.OK,
-    type: ResponsePoolDTO,
-  })
+  @ApiOkResponse({ type: ResponsePoolDTO })
   @Get('/:id')
   async findPool(@Param('id') id: number): Promise<ResponsePoolDTO> {
     const entity = await this.poolService.findPool(id);
     return ResponsePoolDTO.fromEntity(entity);
   }
 
-  @ApiResponse({ status: HttpStatus.OK, type: ResponsePoolDTO })
-  @ApiResponse({ status: HttpStatus.UNAUTHORIZED })
-  @ApiResponse({ status: HttpStatus.BAD_REQUEST })
+  @ApiOkResponse({ type: ResponsePoolDTO })
+  @ApiUnauthorizedResponse()
+  @ApiBadRequestResponse()
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Post('/')
@@ -98,7 +86,6 @@ export class PoolController {
       (await this.beatmapsetService.doesAllMapsExist(payload.beatmaps)) ===
       false
     ) {
-      // TODO: add some kind of i18n or way to handle error messages by not hard coding
       throw new BadRequestException('Not all maps exist');
     }
 
@@ -134,6 +121,9 @@ export class PoolController {
     return ResponsePoolDTO.fromEntity(entity);
   }
 
+  @ApiOkResponse()
+  @ApiBadRequestResponse()
+  @ApiUnauthorizedResponse()
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Delete('/:id')

@@ -3,15 +3,12 @@ import { ApiProperty, getSchemaPath } from '@nestjs/swagger';
 import { CreatePoolDTO } from './create-pool.dto';
 
 export class CreateTournamentDTO {
-  @ApiProperty()
   name: string;
 
-  @ApiProperty()
   cover_url: string;
 
+  /** Array of user id's or new pools */
   @ApiProperty({
-    description:
-      'Either a ID of an existing Pool, or can create a Pool directly',
     type: 'array',
     items: {
       oneOf: [
@@ -21,4 +18,7 @@ export class CreateTournamentDTO {
     },
   })
   pools: Array<number | CreatePoolDTO>;
+
+  /** Array of user id's */
+  collaborators: number[] = [];
 }

@@ -3,15 +3,12 @@ import { TournamentStatus } from '../interfaces/tournament.status.enum';
 import { CreatePoolDTO } from './create-pool.dto';
 
 export class UpdateTournamentDTO {
-  @ApiProperty()
   name: string;
 
-  @ApiProperty()
   cover_url: string;
 
+  /** Either a ID of an existing Pool, or can create a Pool directly */
   @ApiProperty({
-    description:
-      'Either a ID of an existing Pool, or can create a Pool directly',
     type: 'array',
     items: {
       oneOf: [
@@ -30,6 +27,8 @@ export class UpdateTournamentDTO {
   })
   pools: Array<number | CreatePoolDTO>;
 
-  @ApiProperty({ enum: TournamentStatus })
   status: TournamentStatus;
+
+  /** Array of user id's */
+  collaborators: number[] = [];
 }

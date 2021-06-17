@@ -4,22 +4,16 @@ import { Tournament } from '../entities/tournament.entity';
 import { TournamentStatus } from '../interfaces/tournament.status.enum';
 
 export class ResponseTournamentSimpleDTO {
-  @ApiProperty()
   id: number;
 
-  @ApiProperty()
   name: string;
 
-  @ApiProperty()
   cover_url: string;
 
-  @ApiProperty({ enum: TournamentStatus })
   status: TournamentStatus;
 
-  @ApiProperty()
   created_at: Date;
 
-  @ApiProperty()
   last_updated: Date;
 
   static fromEntity(e: Tournament): ResponseTournamentSimpleDTO {

@@ -1,12 +1,12 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { IsArray, IsNotEmpty, IsUrl } from 'class-validator';
 
 export class CreatePoolDTO {
-  @ApiProperty()
-  name: string;
+  @IsNotEmpty()
+  readonly name: string;
 
-  @ApiProperty({ type: Number, isArray: true })
-  beatmaps: number[];
+  @IsArray()
+  readonly beatmaps: number[];
 
-  @ApiProperty()
-  cover_url: string;
+  @IsUrl()
+  readonly cover_url: string;
 }

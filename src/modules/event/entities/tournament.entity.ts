@@ -10,7 +10,6 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
-  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -38,6 +37,10 @@ export class Tournament implements ITournament {
 
   @ManyToOne(() => User, { eager: true })
   created_by: User;
+
+  @ManyToMany(() => User, { eager: true })
+  @JoinTable()
+  collaborators: User[];
 
   @CreateDateColumn({ name: 'created_at' })
   created_at: Date;

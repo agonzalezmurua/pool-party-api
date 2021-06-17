@@ -1,4 +1,3 @@
-import { ApiProperty } from '@nestjs/swagger';
 import { ResponseMapSimpleDTO } from '../../../modules/beatmapset/dto/response-map-simple.dto';
 import { ResponseUserDTO } from '../../../modules/user/dto/response-user.dto';
 import { Pool } from '../entities/pool.entity';
@@ -7,25 +6,18 @@ import { PoolStatus } from '../interfaces/pool.status.enum';
 import { ResponseTournamentSimpleDTO } from './response-tournament-simple.dto';
 
 export class ResponsePoolDTO {
-  @ApiProperty()
   id: number;
 
-  @ApiProperty()
   name: string;
 
-  @ApiProperty()
   cover_url: string;
 
-  @ApiProperty({ type: ResponseMapSimpleDTO, isArray: true })
   beatmaps: ResponseMapSimpleDTO[];
 
-  @ApiProperty({ enum: PoolStatus })
   status: PoolStatus;
 
-  @ApiProperty({ type: ResponseTournamentSimpleDTO, isArray: true })
   used_in: ResponseTournamentSimpleDTO[];
 
-  @ApiProperty({ type: ResponseUserDTO })
   created_by: ResponseUserDTO;
 
   static fromEntity(entity: Pool): ResponsePoolDTO {
