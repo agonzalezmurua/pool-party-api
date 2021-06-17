@@ -1,8 +1,13 @@
 import {
+  Body,
   Controller,
+  Delete,
   Get,
   HttpStatus,
+  NotFoundException,
   Param,
+  Patch,
+  Post,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -11,11 +16,13 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { TournamentService } from './tournament.service';
 
 import { ResponseTournamentDTO } from './dto/response-tournament.dto';
+import { CreateTournamentDTO } from './dto/create-tournament.dto';
+import { UpdateTournamentDTO } from './dto/update-tournament.dto';
 
 @ApiTags('Tournaments')
 @Controller('events/tournaments')
 export class TournamentController {
-  constructor(private eventService: TournamentService) {}
+  constructor(private tournamentService: TournamentService) {}
 
   // TODO: Add query
   @ApiResponse({
@@ -25,7 +32,7 @@ export class TournamentController {
   })
   @Get('/')
   async searchTournaments(): Promise<ResponseTournamentDTO[]> {
-    const entities = await this.eventService.findAllTournaments();
+    const entities = await this.tournamentService.findAllTournaments();
     return entities.map(ResponseTournamentDTO.fromEntity);
   }
 
@@ -36,7 +43,7 @@ export class TournamentController {
   })
   @Get('/latest')
   async getLatestTournaments(): Promise<ResponseTournamentDTO[]> {
-    const entities = await this.eventService.findAllTournaments();
+    const entities = await this.tournamentService.findAllTournaments();
     return entities.map(ResponseTournamentDTO.fromEntity);
   }
 
@@ -54,7 +61,7 @@ export class TournamentController {
   async getUserTournaments(
     @Req() request: Express.Request,
   ): Promise<ResponseTournamentDTO[]> {
-    const entities = await this.eventService.findUserTournaments(
+    const entities = await this.tournamentService.findUserTournaments(
       request.user.id,
     );
     return entities.map(ResponseTournamentDTO.fromEntity);
@@ -68,23 +75,67 @@ export class TournamentController {
   async findTournament(
     @Param('id') id: number,
   ): Promise<ResponseTournamentDTO> {
-    const entity = await this.eventService.findTournament(id);
+    const entity = await this.tournamentService.findTournament(id);
     return ResponseTournamentDTO.fromEntity(entity);
   }
 
-  // TODO: Creation flow
-  // @ApiBearerAuth()
-  // @UseGuards(JwtAuthGuard)
-  // @Post('/tournaments)
-  // async createTournament(@Req() request: Express.Request): Promise<ResponseTournamentDTO> {
-  //   return this.eventService.createTournament();
-  // }
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Post('/')
+  async createTournament(
+    @Body() payload: CreateTournamentDTO,
+    @Req() request: Express.Request,
+  ): Promise<ResponseTournamentDTO> {
+    const entity = await this.tournamentService.createTournament(
+      payload,
+      request.user.id,
+    );
 
-  // TODO: Update flow
-  // @ApiBearerAuth()
-  // @UseGuards(JwtAuthGuard)
-  // @Post(/tournaments/:id)
-  // async updateTournament(@Req() request: Express.Request) {
-  //   return this.eventService.createTournament();
-  // }
+    return ResponseTournamentDTO.fromEntity(entity);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Delete('/:id')
+  async deleteTournament(
+    @Param('id') id: number,
+    @Req() request: Express.Request,
+  ): Promise<void> {
+    if (
+      (await this.tournamentService.doesUserOwnTournament(
+        request.user.id,
+        id,
+      )) === false
+    ) {
+      throw new NotFoundException();
+    }
+
+    await this.tournamentService.deleteTournament(id);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Patch('/:id')
+  async updateTournament(
+    @Param('id') id: number,
+    @Body() dto: UpdateTournamentDTO,
+    @Req() request: Express.Request,
+  ): Promise<ResponseTournamentDTO> {
+    if (
+      (await this.tournamentService.doesUserOwnTournament(
+        request.user.id,
+        id,
+      )) === false
+    ) {
+      throw new NotFoundException();
+    }
+
+    const entity = await this.tournamentService.updateTournament(
+      id,
+      dto,
+      request.user.id,
+    );
+
+    return ResponseTournamentDTO.fromEntity(entity);
+  }
 }

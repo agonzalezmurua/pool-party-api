@@ -2,7 +2,6 @@ import {
   Controller,
   Get,
   HttpStatus,
-  Post,
   Query,
   Req,
   UseGuards,

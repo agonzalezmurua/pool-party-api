@@ -31,26 +31,22 @@ export class PoolService {
     });
   }
 
-  async createPool(
-    payload: CreatePoolDTO,
-    maps: Map[],
-    user: User,
-  ): Promise<Pool> {
+  async createPool(dto: CreatePoolDTO, user: User): Promise<Pool> {
     let status: PoolStatus;
 
-    if (payload.beatmaps.length === 0) {
+    if (dto.beatmaps.length === 0) {
       status = PoolStatus.draft;
     } else {
       status = PoolStatus.public;
     }
 
     const entity = this.repo.create({
-      cover_url: payload.cover_url,
+      beatmaps: dto.beatmaps.map((b) => ({ id: b })),
+      cover_url: dto.cover_url,
+      name: dto.name,
       created_by: user,
-      name: payload.name,
       used_in: [],
       status: status,
-      beatmaps: maps,
     });
 
     return this.repo.save(entity);
@@ -62,18 +58,17 @@ export class PoolService {
     return entity !== null;
   }
 
-  // TODO: Update
-  async updatePool(id: number, pool: UpdatePoolDTO): Promise<Pool> {
-    const entity = await this.repo.findOne(id);
+  async updatePool(poolId: number, dto: UpdatePoolDTO): Promise<Pool> {
+    const entity = await this.repo.findOne(poolId);
 
-    entity.beatmaps = pool.beatmaps.map((id) => ({ id } as Map));
-    entity.cover_url = pool.cover_url;
-    entity.name = pool.name;
-    entity.status = pool.status;
+    const merged = this.repo.merge(entity, {
+      beatmaps: dto.beatmaps.map((b) => ({ id: b } as Map)),
+      cover_url: dto.cover_url,
+      name: dto.name,
+      status: dto.status,
+    });
 
-    await this.repo.save(entity);
-
-    return this.repo.findOne(id);
+    return this.repo.save(merged);
   }
 
   findPool(id: number): Promise<Pool> {

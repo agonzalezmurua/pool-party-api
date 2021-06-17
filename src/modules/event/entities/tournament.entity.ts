@@ -9,6 +9,7 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
+  ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -27,7 +28,7 @@ export class Tournament implements ITournament {
 
   @ManyToMany(() => Pool, {
     eager: true,
-    cascade: ['insert', 'recover', 'update'],
+    cascade: ['insert', 'recover'],
   })
   @JoinTable()
   pools: Pool[];
@@ -35,7 +36,7 @@ export class Tournament implements ITournament {
   @Column({ enum: TournamentStatus })
   status: TournamentStatus;
 
-  @OneToOne(() => User)
+  @ManyToOne(() => User, { eager: true })
   created_by: User;
 
   @CreateDateColumn({ name: 'created_at' })

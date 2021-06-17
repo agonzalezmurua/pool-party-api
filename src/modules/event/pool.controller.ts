@@ -94,35 +94,6 @@ export class PoolController {
     @Body() payload: CreatePoolDTO,
     @Req() request: Express.Request,
   ) {
-    const maps = await this.beatmapsetService.findMapsByIds(payload.beatmaps);
-
-    if (maps.length !== payload.beatmaps.length) {
-      throw new BadRequestException();
-    }
-
-    const entity = await this.poolService.createPool(
-      payload,
-      maps,
-      request.user,
-    );
-
-    return ResponsePoolDTO.fromEntity(entity);
-  }
-
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  @Patch('/:id')
-  async updatePool(
-    @Param('id') id: number,
-    @Body() payload: UpdatePoolDTO,
-    @Req() request: Express.Request,
-  ): Promise<ResponsePoolDTO> {
-    if (
-      (await this.poolService.doesUserOwnPool(request.user.id, id)) === false
-    ) {
-      throw new UnauthorizedException();
-    }
-
     if (
       (await this.beatmapsetService.doesAllMapsExist(payload.beatmaps)) ===
       false
@@ -131,7 +102,34 @@ export class PoolController {
       throw new BadRequestException('Not all maps exist');
     }
 
-    const entity = await this.poolService.updatePool(id, payload);
+    const entity = await this.poolService.createPool(payload, request.user);
+
+    return ResponsePoolDTO.fromEntity(entity);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Patch('/:id')
+  async updatePool(
+    @Param('id') poolId: number,
+    @Body() dto: UpdatePoolDTO,
+    @Req() request: Express.Request,
+  ): Promise<ResponsePoolDTO> {
+    if (
+      (await this.poolService.doesUserOwnPool(request.user.id, poolId)) ===
+      false
+    ) {
+      throw new UnauthorizedException();
+    }
+
+    if (
+      (await this.beatmapsetService.doesAllMapsExist(dto.beatmaps)) === false
+    ) {
+      // TODO: add some kind of i18n or way to handle error messages by not hard coding
+      throw new BadRequestException('Not all maps exist');
+    }
+
+    const entity = await this.poolService.updatePool(poolId, dto);
 
     return ResponsePoolDTO.fromEntity(entity);
   }
