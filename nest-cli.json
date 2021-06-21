@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "assets": [
+      {
+        "include": "../config/*.yaml",
+        "outDir": "./dist/config"
+      }
+    ],
+    "plugins": [
+      {
+        "name": "@nestjs/swagger",
+        "options": {
+          "introspectComments": true
+        }
+      }
+    ]
+  },
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "src"
+}
